@@ -72,7 +72,14 @@ public class LibroServiceImpl implements LibroService {
         repo.deleteById(id);
     }
 
+    @Override
+    public LibroDTO buscarDto(Integer id) {
+        Libro libro = repo.findById(id).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
+        return libroMapper.toDTO(libro);
+    }
+
     //metodos heredados por implementes
+
 
 
 }

@@ -37,6 +37,10 @@ public interface LibroService {
     //eliminar libro
     void borrarLibro(Integer id);
 
+    //buscar dto
+
+    LibroDTO buscarDto(Integer id);
+
 
 
 }
