@@ -5,15 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LibroDTO {
+public class LibroResponseDTO {
 
+    //
     private Integer id;
     private String titulo;
     private String autor;
-    private LocalDate fechaPublicacion;
 }

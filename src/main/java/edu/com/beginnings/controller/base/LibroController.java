@@ -1,6 +1,8 @@
 package edu.com.beginnings.controller.base;
 
 
+import edu.com.beginnings.dto.base.LibroDTO;
+import edu.com.beginnings.dto.base.LibroResponseDTO;
 import edu.com.beginnings.model.base.Libro;
 import edu.com.beginnings.service.base.LibroService;
 import lombok.RequiredArgsConstructor;
@@ -22,28 +24,38 @@ public class LibroController {
 
     //listar
     @GetMapping("/listado")
-    public ResponseEntity<List<Libro>> listado() {
-        return  ResponseEntity.ok(libroService.listarLibros());
+    public ResponseEntity<List<LibroResponseDTO>> listado() {
+        return ResponseEntity.ok(libroService.listarLibrosdto());
     }
 
-    //buscar
-
+    //buscar por id
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<Libro> buscar(@PathVariable Integer id) {
-        return  ResponseEntity.ok(libroService.buscarLibro(id));
+    public ResponseEntity<LibroResponseDTO> buscar(@PathVariable Integer id) {
+        LibroResponseDTO libro = libroService.buscarDtoResponse(id);
+        return ResponseEntity.ok(libro);
     }
 
-    //
+    //registrar
     @PostMapping("/registrar")
-    public ResponseEntity<Libro> guardar(@RequestBody Libro libro) {
-        return ResponseEntity.ok(libroService.guardarLibro(libro));
+    public ResponseEntity<LibroResponseDTO> registrar(@RequestBody LibroDTO libroDTO) {
+        return  ResponseEntity.ok(libroService.guardarLibrodto(libroDTO));
     }
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> borrar(@PathVariable Integer id) {
-        libroService.borrarLibro(id);
-        return ResponseEntity.noContent().build();
+    //modificar
+    @PutMapping("/modificar/{id}")
+    public ResponseEntity<LibroResponseDTO> modificar( @RequestBody LibroDTO libroDTO,@PathVariable Integer id) {
+        LibroResponseDTO libro2 =  libroService.modificarunlibrodto(libroDTO,id);
+        return ResponseEntity.ok(libro2);
     }
+
+
+    //eliminar
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        libroService.borrarLibro(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
