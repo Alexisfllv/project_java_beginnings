@@ -7,20 +7,6 @@ import java.util.List;
 
 public interface LibroService {
 
-//    //listado
-//    List<Libro> listarLibros();
-//
-//    //busqueda por id
-//    Libro buscarLibro(Integer id);
-//
-//    //registrar libro
-//    Libro guardarLibro(Libro libro);
-//
-//    //eliminar libro
-//    void borrarLibro(Integer id);
-//
-
-
     // DTO libro
     //listado
     List<LibroResponseDTO> listarLibrosdto();
