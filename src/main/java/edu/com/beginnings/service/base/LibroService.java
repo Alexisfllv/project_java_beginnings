@@ -18,7 +18,7 @@ public interface LibroService {
     LibroResponseDTO guardarLibrodto(LibroDTO libroDTO);
 
     //modificar un libro
-    LibroResponseDTO modificarunlibrodto(LibroDTO libro , Integer id);
+    LibroResponseDTO modificarLibrodto(LibroDTO libro , Integer id);
 
     //eliminar libro
     void borrarLibro(Integer id);

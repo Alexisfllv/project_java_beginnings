@@ -69,7 +69,7 @@ public class LibroControllerMVC {
     // Procesar edición
     @PostMapping("/editar/{id}")
     public String editarLibro(@ModelAttribute LibroDTO libroDTO, @PathVariable Integer id) {
-        libroService.modificarunlibrodto(libroDTO, id);
+        libroService.modificarLibrodto(libroDTO, id);
         return "redirect:/libros/lista";
     }
 
