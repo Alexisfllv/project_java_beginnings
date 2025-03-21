@@ -38,14 +38,14 @@ public class Producto {
     @Column(name = "producto_fecha_fin", nullable = true)
     private LocalDateTime fechaFin;
 
-    @PrePersist
-    public void prePersist() {
-        if (fechaInicio == null) {
-            fechaInicio = LocalDateTime.now(); // Asigna la fecha actual si no se ha definido
-        }
-        if (fechaFin == null) {
-            fechaFin = fechaInicio.plusDays(3); // Suma 3 días automáticamente
-        }
-
-    }
+//    @PrePersist
+//    public void prePersist() {
+//        if (fechaInicio == null) {
+//            fechaInicio = LocalDateTime.now(); // Asigna la fecha actual si no se ha definido
+//        }
+//        if (fechaFin == null) {
+//            fechaFin = fechaInicio.plusDays(3); // Suma 3 días automáticamente
+//        }
+//
+//    }
 }

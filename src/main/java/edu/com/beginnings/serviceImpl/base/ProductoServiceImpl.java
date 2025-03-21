@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,24 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public ProductoResponseDTO registrar(ProductoRequestDTO productoRequestDTO) {
         Producto producto =  productoMapper.toProducto(productoRequestDTO);
+        producto.setNombre(productoRequestDTO.getNombre());
+        producto.setCantidad(productoRequestDTO.getCantidad());
+        producto.setPeso(productoRequestDTO.getPeso());
+
+        //registrar la fecha actual si no se envia ninguna fecha
+        if (producto.getFechaInicio() != null) {
+            producto.setFechaInicio(producto.getFechaInicio());
+        }else {
+            producto.setFechaInicio(LocalDateTime.now());
+        }
+
+        //registrar fecha fin si no se envia ninguna fecha por defecto +3 days
+        if (producto.getFechaFin() != null) {
+            producto.setFechaFin(producto.getFechaFin());
+        }else {
+            producto.setFechaFin(producto.getFechaInicio().plusDays(3));
+        }
+
         Producto save = productoRepo.save(producto);
         //mostrar el responseDTO
         return productoMapper.toResponseDTO(save);
@@ -53,11 +72,20 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public ProductoResponseDTO actualizar(ProductoDTO productoDTO, Integer id) {
         Producto productoExiste = productoRepo.findById(id).get();
+
         productoExiste.setNombre(productoDTO.getNombre());
         productoExiste.setCantidad(productoDTO.getCantidad());
         productoExiste.setPeso(productoDTO.getPeso());
-        productoExiste.setFechaFin(productoDTO.getFechaFin());
-        productoExiste.setFechaFin(productoDTO.getFechaFin());
+
+        // se envia un fechaincio , la actualizamos a lo que se diga
+        if (productoDTO.getFechaInicio() != null) {
+            productoExiste.setFechaInicio(productoDTO.getFechaInicio());
+        }
+
+        // si envia una fechafin , la actualizamos ,si no la dejamos igual
+        if (productoDTO.getFechaFin() != null) {
+            productoExiste.setFechaFin(productoDTO.getFechaFin());
+        }
 
         productoExiste = productoRepo.save(productoExiste);
         return productoMapper.toResponseDTO(productoExiste);
