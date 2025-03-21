@@ -5,6 +5,7 @@ import edu.com.beginnings.dto.base.LibroResponseDTO;
 import edu.com.beginnings.dto.base.ProductoDTO;
 import edu.com.beginnings.dto.base.ProductoRequestDTO;
 import edu.com.beginnings.dto.base.ProductoResponseDTO;
+import edu.com.beginnings.dto.record.base.ProductoRequestRecordDTO;
 import edu.com.beginnings.map.base.ProductoMapper;
 import edu.com.beginnings.model.base.Producto;
 import edu.com.beginnings.repo.base.ProductoRepo;
@@ -42,31 +43,23 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
-    public ProductoResponseDTO registrar(ProductoRequestDTO productoRequestDTO) {
-        Producto producto =  productoMapper.toProducto(productoRequestDTO);
-        producto.setNombre(productoRequestDTO.getNombre());
-        producto.setCantidad(productoRequestDTO.getCantidad());
-        producto.setPeso(productoRequestDTO.getPeso());
-
+    public ProductoResponseDTO registrar(ProductoRequestRecordDTO productoRequestRecordDTO) {
+        Producto producto =  productoMapper.toProducto(productoRequestRecordDTO);
         //registrar la fecha actual si no se envia ninguna fecha
         if (producto.getFechaInicio() != null) {
             producto.setFechaInicio(producto.getFechaInicio());
         }else {
             producto.setFechaInicio(LocalDateTime.now());
         }
-
         //registrar fecha fin si no se envia ninguna fecha por defecto +3 days
         if (producto.getFechaFin() != null) {
             producto.setFechaFin(producto.getFechaFin());
         }else {
             producto.setFechaFin(producto.getFechaInicio().plusDays(3));
         }
-
         Producto save = productoRepo.save(producto);
         //mostrar el responseDTO
         return productoMapper.toResponseDTO(save);
-
-
     }
 
     @Override

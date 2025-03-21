@@ -4,6 +4,7 @@ import edu.com.beginnings.dto.base.LibroResponseDTO;
 import edu.com.beginnings.dto.base.ProductoDTO;
 import edu.com.beginnings.dto.base.ProductoRequestDTO;
 import edu.com.beginnings.dto.base.ProductoResponseDTO;
+import edu.com.beginnings.dto.record.base.ProductoRequestRecordDTO;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface ProductoService {
     ProductoResponseDTO buscarLibro(Integer id);
 
     //registrar producto
-    ProductoResponseDTO registrar(ProductoRequestDTO productoRequestDTO);
+    ProductoResponseDTO registrar(ProductoRequestRecordDTO productoRequestRecordDTO);
 
     //modificar producto
     ProductoResponseDTO actualizar(ProductoDTO productoDTO ,Integer id);

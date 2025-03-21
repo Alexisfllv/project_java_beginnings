@@ -5,7 +5,9 @@ import edu.com.beginnings.dto.base.LibroResponseDTO;
 import edu.com.beginnings.dto.base.ProductoDTO;
 import edu.com.beginnings.dto.base.ProductoRequestDTO;
 import edu.com.beginnings.dto.base.ProductoResponseDTO;
+import edu.com.beginnings.dto.record.base.ProductoRequestRecordDTO;
 import edu.com.beginnings.service.base.ProductoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +37,8 @@ public class ProductoController {
 
     //registrar
     @PostMapping("/registrar")
-    public ResponseEntity<ProductoResponseDTO> registrar(@RequestBody ProductoRequestDTO productoRequestDTO) {
-        return ResponseEntity.ok(productoService.registrar(productoRequestDTO));
+    public ResponseEntity<ProductoResponseDTO> registrar(@Valid @RequestBody ProductoRequestRecordDTO productoRequestRecordDTO) {
+        return ResponseEntity.ok(productoService.registrar(productoRequestRecordDTO));
     }
 
     //modificar
