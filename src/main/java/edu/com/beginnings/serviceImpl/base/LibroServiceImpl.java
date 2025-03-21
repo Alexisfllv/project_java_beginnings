@@ -4,7 +4,7 @@ import edu.com.beginnings.dto.base.LibroDTO;
 import edu.com.beginnings.dto.base.LibroResponseDTO;
 import edu.com.beginnings.excepcion.base.BadRequestException;
 import edu.com.beginnings.excepcion.base.ResourceNotFoundException;
-import edu.com.beginnings.map.LibroMapper;
+import edu.com.beginnings.map.base.LibroMapper;
 import edu.com.beginnings.model.base.Libro;
 import edu.com.beginnings.repo.base.LibroRepo;
 import edu.com.beginnings.service.base.LibroService;
@@ -29,7 +29,7 @@ public class LibroServiceImpl implements LibroService {
     private final LibroRepo repo;
 
     //ioc mapper
-    @Qualifier("libroMapper")
+    //@Qualifier("libroMapper")
     private final LibroMapper libroMapper;
 
     @Override

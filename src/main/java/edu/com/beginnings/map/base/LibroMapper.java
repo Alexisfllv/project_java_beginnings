@@ -1,4 +1,4 @@
-package edu.com.beginnings.map;
+package edu.com.beginnings.map.base;
 
 
 import edu.com.beginnings.dto.base.LibroDTO;
