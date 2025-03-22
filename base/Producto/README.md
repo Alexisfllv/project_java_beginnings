@@ -1,260 +1,360 @@
-# Aplicación de Gestión de Libros con Spring Boot
+# Documentación API de Productos Refrigerados
 
-## Descripción general
+## Descripción General
 
-Esta aplicación es un servicio REST para la gestión de libros, desarrollada con Spring Boot y siguiendo una arquitectura multicapa. Permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre una entidad Libro.
+Este proyecto implementa una API RESTful para la gestión de productos refrigerados utilizando Spring Boot. La aplicación permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre productos almacenados en una base de datos.
 
 ## Arquitectura
 
-La aplicación sigue el patrón de arquitectura en capas:
+El proyecto sigue una arquitectura en capas:
 
-1. **Capa de presentación**: Controladores REST
-2. **Capa de servicio**: Lógica de negocio
-3. **Capa de persistencia**: Repositorios y entidades JPA
-4. **Capa de transferencia de datos**: DTOs y Mappers
+- **Capa de Entidades**: Define el modelo de datos.
+- **Capa de DTOs**: Objetos de transferencia de datos para las diferentes operaciones.
+- **Capa de Mappers**: Conversión entre entidades y DTOs.
+- **Capa de Servicios**: Lógica de negocio.
+- **Capa de Controladores**: Endpoints de la API REST.
 
-## Componentes principales
+## Componentes
 
-### Entidad
+### Entidad Producto
 
 ```java
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
-@Entity 
-@Table(name = "libros")
-public class Libro {
-    @Id
+@Entity
+@Table(name = "productos_refrigerados")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Integer id;
     
-    @Column(name = "libro_titulo", length = 60, nullable = true)
-    private String titulo;
+    @Column(name = "producto_nombre", length = 60, nullable = false)
+    private String nombre;
     
-    @Column(name = "libro_autor", length = 80, nullable = false)
-    private String autor;
+    @Column(name = "producto_cantidad", nullable = false)
+    private Integer cantidad;
     
-    @Column(name = "libro_fecha_publicacion", nullable = false)
-    private LocalDate fechaPublicacion;
+    @Column(name = "producto_peso", precision = 10, scale = 3, nullable = false)
+    private BigDecimal peso;
+    
+    @Column(name = "producto_fecha_inicio", nullable = true)
+    private LocalDateTime fechaInicio;
+    
+    @Column(name = "producto_fecha_fin", nullable = true)
+    private LocalDateTime fechaFin;
+    
+    // Método comentado para pre-persistencia automática de fechas
 }
 ```
 
-### DTOs
+**Características:**
+- Utiliza Lombok (`@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`) para reducir código boilerplate.
+- Se mapea a la tabla `productos_refrigerados` en la base de datos.
+- Incluye campos para:
+  - ID (generado automáticamente)
+  - Nombre del producto (limitado a 60 caracteres)
+  - Cantidad
+  - Peso (con precisión decimal)
+  - Fechas de inicio y fin de refrigeración
+
+### DTOs (Data Transfer Objects)
+
+#### ProductoDTO
 
 ```java
-@Data 
-@NoArgsConstructor 
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class LibroDTO {
+public class ProductoDTO {
     private Integer id;
-    private String titulo;
-    private String autor;
-    private LocalDate fechaPublicacion;
-}
-
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor
-public class LibroResponseDTO {
-    private Integer id;
-    private String titulo;
-    private String autor;
+    private String nombre;
+    private Integer cantidad;
+    private BigDecimal peso;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
 }
 ```
+
+**Propósito:** DTO general para operaciones con todos los campos.
+
+#### ProductoRequestDTO
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductoRequestDTO {
+    private Integer id;
+    private String nombre;
+    private Integer cantidad;
+    private BigDecimal peso;
+}
+```
+
+**Propósito:** DTO para peticiones que no requieren las fechas.
+
+#### ProductoResponseDTO
+
+```java
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProductoResponseDTO {
+    private Integer id;
+    private String nombre;
+    private Integer cantidad;
+    private BigDecimal peso;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
+}
+```
+
+**Propósito:** DTO para respuestas, incluyendo todos los campos.
+
+#### ProductoRequestRecordDTO (Java Record)
+
+```java
+public record ProductoRequestRecordDTO(
+    Integer id,
+    
+    @NotBlank
+    @Size(max = 60)
+    String nombre,
+    
+    @NotNull
+    @Min(1)
+    Integer cantidad,
+    
+    @NotNull
+    @DecimalMin(value = "0.001", inclusive = true, message = "🚨 🚨 🚨 peso mayor a 0.001")
+    BigDecimal peso
+) {}
+```
+
+**Propósito:** 
+- DTO inmutable (Java Record) para solicitudes de creación.
+- Incluye validaciones:
+  - Nombre no puede estar vacío y máximo 60 caracteres
+  - Cantidad debe ser al menos 1
+  - Peso debe ser mayor a 0.001
 
 ### Mapper
 
 ```java
 @Mapper(componentModel = "spring")
-public interface LibroMapper {
-    // Entidad > DTO
-    LibroDTO toDTO(Libro libro);
+public interface ProductoMapper {
+    // Conversiones entre Entidad y DTOs
+    ProductoDTO toDTO(Producto producto);
+    Producto toProducto(ProductoDTO productoDTO);
     
-    // DTO > Entidad
-    Libro toLibro(LibroDTO libroDTO);
+    ProductoResponseDTO toResponseDTO(Producto producto);
+    Producto toProducto(ProductoResponseDTO productoResponseDTO);
     
-    // Entidad > ResponseDTO
-    LibroResponseDTO toResponseDTO(Libro libro);
+    ProductoRequestDTO toRequestDTO(Producto producto);
+    Producto toProducto(ProductoRequestDTO productoRequestDTO);
     
-    // ResponseDTO > Entidad
-    Libro toLibro2(LibroResponseDTO libroResponseDTO);
+    // Conversiones para el Record DTO
+    ProductoRequestRecordDTO toRequestRecordDTO(Producto producto);
+    Producto toProducto(ProductoRequestRecordDTO productoRequestRecordDTO);
 }
 ```
 
-### Repositorio
-
-```java
-@Repository
-public interface LibroRepo extends JpaRepository<Libro, Integer> {
-}
-```
+**Características:**
+- Utiliza MapStruct (`@Mapper`) para mapeo automático entre objetos.
+- Configurado como componente Spring.
+- Define métodos bidireccionales para convertir entre todos los tipos de DTOs y la entidad Producto.
 
 ### Servicio
 
+#### Interfaz
+
 ```java
-public interface LibroService {
-    // Operaciones de servicio
-    List<LibroResponseDTO> listarLibrosdto();
-    LibroResponseDTO buscarDtoResponse(Integer id);
-    LibroResponseDTO guardarLibrodto(LibroDTO libroDTO);
-    LibroResponseDTO modificarunlibrodto(LibroDTO libro, Integer id);
-    void borrarLibro(Integer id);
-    LibroDTO buscarDto(Integer id);
+public interface ProductoService {
+    // Listado total
+    List<ProductoResponseDTO> listarLibros();
+    
+    // Buscar producto
+    ProductoResponseDTO buscarLibro(Integer id);
+    
+    // Registrar producto
+    ProductoResponseDTO registrar(ProductoRequestRecordDTO productoRequestRecordDTO);
+    
+    // Modificar producto
+    ProductoResponseDTO actualizar(ProductoDTO productoDTO, Integer id);
+    
+    // Eliminar
+    void borrarProducto(Integer id);
 }
 ```
 
-### Implementación del Servicio
+#### Implementación
 
 ```java
-@Service 
 @RequiredArgsConstructor
-public class LibroServiceImpl implements LibroService {
+@Service
+public class ProductoServiceImpl implements ProductoService {
     
-    // Inyección de dependencias
-    private final LibroRepo repo;
-    
-    @Qualifier("libroMapper")
-    private final LibroMapper libroMapper;
+    private final ProductoRepo productoRepo;
+    private final ProductoMapper productoMapper;
     
     @Override
-    public List<LibroResponseDTO> listarLibrosdto() {
-        List<Libro> libros = repo.findAll();
-        
-        return libros.stream()
-                .map(libroMapper::toResponseDTO)
+    public List<ProductoResponseDTO> listarLibros() {
+        List<Producto> productos = productoRepo.findAll();
+        return productos.stream()
+                .map(productoMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
     
     @Override
-    public LibroResponseDTO buscarDtoResponse(Integer id) {
-        Libro libro = repo.findById(id).get();
-        return libroMapper.toResponseDTO(libro);
+    public ProductoResponseDTO buscarLibro(Integer id) {
+        Producto producto = productoRepo.findById(id).get();
+        return productoMapper.toResponseDTO(producto);
     }
     
     @Override
-    public LibroResponseDTO guardarLibrodto(LibroDTO libroDTO) {
-        Libro libro = libroMapper.toLibro(libroDTO);
-        Libro save = repo.save(libro);
-        return libroMapper.toResponseDTO(save);
-    }
-    
-    @Override
-    public LibroResponseDTO modificarunlibrodto(LibroDTO libroDTO, Integer id) {
-        Libro libroExistente = repo.findById(id).get();
-        libroExistente.setTitulo(libroDTO.getTitulo());
-        libroExistente.setAutor(libroDTO.getAutor());
-        libroExistente.setFechaPublicacion(libroDTO.getFechaPublicacion());
+    public ProductoResponseDTO registrar(ProductoRequestRecordDTO productoRequestRecordDTO) {
+        Producto producto = productoMapper.toProducto(productoRequestRecordDTO);
         
-        libroExistente = repo.save(libroExistente);
-        return libroMapper.toResponseDTO(libroExistente);
+        // Gestión de fechas
+        if (producto.getFechaInicio() != null) {
+            producto.setFechaInicio(producto.getFechaInicio());
+        } else {
+            producto.setFechaInicio(LocalDateTime.now());
+        }
+        
+        if (producto.getFechaFin() != null) {
+            producto.setFechaFin(producto.getFechaFin());
+        } else {
+            producto.setFechaFin(producto.getFechaInicio().plusDays(3));
+        }
+        
+        Producto save = productoRepo.save(producto);
+        return productoMapper.toResponseDTO(save);
     }
     
     @Override
-    public void borrarLibro(Integer id) {
-        repo.deleteById(id);
+    public ProductoResponseDTO actualizar(ProductoDTO productoDTO, Integer id) {
+        Producto productoExiste = productoRepo.findById(id).get();
+        
+        productoExiste.setNombre(productoDTO.getNombre());
+        productoExiste.setCantidad(productoDTO.getCantidad());
+        productoExiste.setPeso(productoDTO.getPeso());
+        
+        // Actualización condicional de fechas
+        if (productoDTO.getFechaInicio() != null) {
+            productoExiste.setFechaInicio(productoDTO.getFechaInicio());
+        }
+        
+        if (productoDTO.getFechaFin() != null) {
+            productoExiste.setFechaFin(productoDTO.getFechaFin());
+        }
+        
+        productoExiste = productoRepo.save(productoExiste);
+        return productoMapper.toResponseDTO(productoExiste);
     }
     
     @Override
-    public LibroDTO buscarDto(Integer id) {
-        Libro libro = repo.findById(id).orElseThrow(() -> new RuntimeException("Libro no encontrado"));
-        return libroMapper.toDTO(libro);
+    public void borrarProducto(Integer id) {
+        productoRepo.deleteById(id);
     }
 }
 ```
+
+**Características:**
+- Utiliza inyección de dependencias con Lombok `@RequiredArgsConstructor`.
+- Implementa operaciones CRUD:
+  - **Listar**: Recupera todos los productos y los convierte a DTOs.
+  - **Buscar**: Encuentra un producto por ID.
+  - **Registrar**: Crea un nuevo producto con lógica para fechas automáticas.
+  - **Actualizar**: Modifica un producto existente preservando fechas si no se especifican.
+  - **Eliminar**: Borra un producto por ID.
 
 ### Controlador REST
 
 ```java
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/base/libros")
-public class LibroController {
+@RequestMapping("/base/productos")
+public class ProductoController {
 
-    private final LibroService libroService;
+    private final ProductoService productoService;
 
-    @GetMapping("/listado")
-    public ResponseEntity<List<LibroResponseDTO>> listado() {
-        return ResponseEntity.ok(libroService.listarLibrosdto());
+    @GetMapping("/listar")
+    public ResponseEntity<List<ProductoResponseDTO>> listar() {
+        return ResponseEntity.ok(productoService.listarLibros());
     }
 
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<LibroResponseDTO> buscar(@PathVariable Integer id) {
-        LibroResponseDTO libro = libroService.buscarDtoResponse(id);
-        return ResponseEntity.ok(libro);
+    public ResponseEntity<ProductoResponseDTO> buscar(@PathVariable Integer id) {
+        return ResponseEntity.ok(productoService.buscarLibro(id));
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<LibroResponseDTO> registrar(@RequestBody LibroDTO libroDTO) {
-        return ResponseEntity.ok(libroService.guardarLibrodto(libroDTO));
+    public ResponseEntity<ProductoResponseDTO> registrar(
+            @Valid @RequestBody ProductoRequestRecordDTO productoRequestRecordDTO) {
+        return ResponseEntity.ok(productoService.registrar(productoRequestRecordDTO));
     }
 
     @PutMapping("/modificar/{id}")
-    public ResponseEntity<LibroResponseDTO> modificar(@RequestBody LibroDTO libroDTO, @PathVariable Integer id) {
-        LibroResponseDTO libro2 = libroService.modificarunlibrodto(libroDTO, id);
-        return ResponseEntity.ok(libro2);
+    public ResponseEntity<ProductoResponseDTO> modificar(
+            @RequestBody ProductoDTO productoDTO, @PathVariable Integer id) {
+        ProductoResponseDTO modificado = productoService.actualizar(productoDTO, id);
+        return ResponseEntity.ok(modificado);
     }
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        libroService.borrarLibro(id);
-        return ResponseEntity.ok().build();
+        productoService.borrarProducto(id);
+        return ResponseEntity.noContent().build();
     }
 }
 ```
 
-## API Endpoints
+**Características:**
+- Define endpoints REST bajo la ruta base `/base/productos`.
+- Implementa los métodos HTTP:
+  - **GET** para listar y buscar
+  - **POST** para registrar
+  - **PUT** para modificar
+  - **DELETE** para eliminar
+- Usa `@Valid` para validar el DTO de registro.
+- Retorna respuestas HTTP apropiadas (200 OK, 204 No Content).
 
-| Método HTTP | Endpoint | Descripción |
-|-------------|----------|-------------|
-| GET | /base/libros/listado | Obtiene todos los libros |
-| GET | /base/libros/buscar/{id} | Busca un libro por ID |
-| POST | /base/libros/registrar | Crea un nuevo libro |
-| PUT | /base/libros/modificar/{id} | Actualiza un libro existente |
-| DELETE | /base/libros/eliminar/{id} | Elimina un libro |
+## Funcionalidades Principales
 
-## Tecnologías utilizadas
+### 1. Gestión Automática de Fechas
+- Si no se especifica una fecha de inicio al crear un producto, se establece automáticamente la fecha actual.
+- Si no se especifica una fecha de fin, se establece automáticamente 3 días después de la fecha de inicio.
 
-- **Spring Boot**: Framework principal
-- **Spring Data JPA**: Persistencia de datos
-- **Lombok**: Reducción de código boilerplate
-- **MapStruct**: Mapeo entre objetos
+### 2. Validación de Datos
+- Nombre: No puede estar vacío y máximo 60 caracteres.
+- Cantidad: Debe ser al menos 1.
+- Peso: Debe ser mayor a 0.001.
 
-## Patrones de diseño
+### 3. Endpoints API
 
-- **DTO (Data Transfer Object)**: Para transferencia de datos entre capas
-- **Repository Pattern**: Para acceso a datos
-- **Dependency Injection**: Inyección de dependencias mediante Spring
-- **Service Layer**: Encapsulación de la lógica de negocio
+| Método HTTP | Ruta | Descripción |
+|-------------|------|-------------|
+| GET | `/base/productos/listar` | Obtener todos los productos |
+| GET | `/base/productos/buscar/{id}` | Buscar producto por ID |
+| POST | `/base/productos/registrar` | Crear nuevo producto |
+| PUT | `/base/productos/modificar/{id}` | Actualizar producto existente |
+| DELETE | `/base/productos/eliminar/{id}` | Eliminar producto |
 
-## Diagrama de flujo
+## Tecnologías Utilizadas
 
-```
-+----------------+     +----------------+     +----------------+
-| LibroController|---->| LibroService   |---->| LibroRepo      |
-+----------------+     +----------------+     +----------------+
-        |                     |                       |
-        |                     |                       |
-        v                     v                       v
-   (REST API)          (Lógica Negocio)         (Base de Datos)
-                              |                       
-                              v                       
-                       +----------------+      +----------------+
-                       | LibroMapper    |----->| Libro (Entity) |
-                       +----------------+      +----------------+
-                              |
-                              v
-                       +----------------+
-                       | DTOs           |
-                       +----------------+
-```
+- **Spring Boot**: Framework para desarrollo de aplicaciones Java.
+- **Spring Data JPA**: Para persistencia y operaciones con base de datos.
+- **Lombok**: Para reducir código boilerplate.
+- **MapStruct**: Para mapeo entre objetos.
+- **Bean Validation**: Para validación de datos.
+- **Java Records**: Para DTOs inmutables.
 
-## Configuración
+## Consideraciones y Mejoras Posibles
 
-La aplicación requiere una base de datos configurada en el archivo `application.properties` o `application.yml`.
-
-## Cómo ejecutar
-
-1. Clonar el repositorio
-2. Configurar la base de datos
-3. Ejecutar `mvn spring-boot:run`
-4. Acceder a los endpoints a través de http://localhost:8080/base/libros/
+1. **Manejo de Excepciones**: Implementar un manejador global de excepciones para manejar casos como productos no encontrados.
+2. **Seguridad**: Añadir autenticación y autorización.
+3. **Paginación**: Implementar paginación para el listado de productos.
+4. **Tests**: Agregar pruebas unitarias y de integración.
+5. **Documentación API**: Integrar Swagger/OpenAPI para documentación automática.
