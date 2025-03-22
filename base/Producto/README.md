@@ -14,6 +14,129 @@ El proyecto sigue una arquitectura en capas:
 - **Capa de Servicios**: Lógica de negocio.
 - **Capa de Controladores**: Endpoints de la API REST.
 
+## Configuración del Proyecto (pom.xml)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.3</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>edu.com</groupId>
+    <artifactId>beginnings</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>beginnings</name>
+    <description>beginnings</description>
+    
+    <properties>
+        <java.version>21</java.version>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+    </properties>
+
+    <dependencies>
+        <!-- SPRING BOOT -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- MySQL -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- MapStruct -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${org.mapstruct.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- mvc -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+        <!-- validaciones dtos , records -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>21</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+**Características clave del proyecto:**
+- Utiliza Java 21
+- Spring Boot 3.4.3
+- Base de datos MySQL
+- Mapstruct 1.6.3 para mapeo de objetos
+- Lombok para reducción de código boilerplate
+- Validación de datos con Spring Validation
+- Thymeleaf para vistas HTML (aunque este proyecto se enfoca en la API REST)
+
 ## Componentes
 
 ### Entidad Producto
@@ -344,12 +467,15 @@ public class ProductoController {
 
 ## Tecnologías Utilizadas
 
-- **Spring Boot**: Framework para desarrollo de aplicaciones Java.
+- **Spring Boot 3.4.3**: Framework para desarrollo de aplicaciones Java.
+- **Java 21**: Versión del lenguaje de programación utilizada.
 - **Spring Data JPA**: Para persistencia y operaciones con base de datos.
+- **MySQL**: Sistema de gestión de base de datos relacional.
 - **Lombok**: Para reducir código boilerplate.
-- **MapStruct**: Para mapeo entre objetos.
+- **MapStruct 1.6.3**: Para mapeo entre objetos.
 - **Bean Validation**: Para validación de datos.
 - **Java Records**: Para DTOs inmutables.
+- **Thymeleaf**: Motor de plantillas para vistas HTML (aunque este proyecto se enfoca en la API REST).
 
 ## Consideraciones y Mejoras Posibles
 
