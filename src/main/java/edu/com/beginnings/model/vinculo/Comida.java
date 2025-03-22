@@ -22,7 +22,7 @@ public class Comida {
     @Column(name = "comida_id")
     private Integer id;
 
-    @Column(name = "comida_nombre")
+    @Column(name = "comida_nombre",nullable = false)
     private String nombre;
 
     @Column(name = "producto_cantidad", nullable = false)
