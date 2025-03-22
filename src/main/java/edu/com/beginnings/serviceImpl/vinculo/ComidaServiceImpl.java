@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ComidaServiceImpl implements ComidaService {
@@ -34,6 +36,19 @@ public class ComidaServiceImpl implements ComidaService {
         Comida comida = comidaMapper.comidaReq(comidaRequestDTO);
         //enviar la categoria registrada
         comida.setCategoria(categoria);
+
+        //gestion de fechas
+        if (comida.getFechaInicio() != null) {
+            comida.setFechaInicio(comida.getFechaInicio());
+        } else {
+            comida.setFechaInicio(LocalDateTime.now());
+        }
+
+        if (comida.getFechaFin() != null) {
+            comida.setFechaFin(comida.getFechaFin());
+        } else {
+            comida.setFechaFin(LocalDateTime.now().plusDays(3));
+        }
 
         //guardar al modelo comida
         comida = comidaRepo.save(comida);
