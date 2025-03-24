@@ -11,6 +11,8 @@ import edu.com.beginnings.repo.vinculo.CategoriaRepo;
 import edu.com.beginnings.repo.vinculo.ComidaRepo;
 import edu.com.beginnings.service.vinculo.ComidaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +44,12 @@ public class ComidaServiceImpl implements ComidaService {
                 .map(comida -> comidaMapper.comidaResponseDTO(comida))
                 .collect(Collectors.toList());
 
+    }
 
+    //listar page / poli
+    @Override
+    public Page<ComidaResponseDTO> listarComidas(Pageable pageable) {
+        return comidaRepo.findAll(pageable).map(comidaMapper::comidaResponseDTO);
     }
 
     //buscar por id

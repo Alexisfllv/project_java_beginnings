@@ -8,6 +8,9 @@ import edu.com.beginnings.model.vinculo.Comida;
 import edu.com.beginnings.service.vinculo.ComidaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +28,24 @@ public class ComidaController {
 
     //listar comidas con detallas
     @GetMapping("/listar")
-    public List<ComidaResponseDTO> listarComidas() {
-        List<ComidaResponseDTO> comidas = comidaService.listarComidas();
-        return ResponseEntity.status(200).body(comidas).getBody();
+    public ResponseEntity<?> listarComidas(
+
+            //paginador
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size
+
+    ) {
+        if (page != null && size != null) {
+            Pageable pageable = PageRequest.of(page, size);
+            return ResponseEntity.ok(comidaService.listarComidas(pageable));
+        }
+        return ResponseEntity.status(200).body(comidaService.listarComidas());
     }
+
+    // Comida service
+
+
+
 
     //BUscar x id
     @GetMapping("/buscar/{id}")
