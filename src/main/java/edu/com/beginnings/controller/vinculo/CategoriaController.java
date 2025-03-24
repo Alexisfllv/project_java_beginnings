@@ -44,7 +44,6 @@ public class CategoriaController {
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         categoriaService.eliminar(id);
-
         return ResponseEntity.noContent().build();
     }
 }

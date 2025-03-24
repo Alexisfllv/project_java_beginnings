@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public record ComidaRequestDTO(
 
-        @NotBlank
+        @NotBlank(message = "El nombre no puede estar vacío")
         String nombre,
 
         @NotNull
@@ -18,7 +18,6 @@ public record ComidaRequestDTO(
 
         @NotNull
         Integer categoriaId
-
 
 ) {
 }
