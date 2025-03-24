@@ -4,18 +4,14 @@ package edu.com.beginnings.controller.vinculo;
 import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
-import edu.com.beginnings.model.vinculo.Comida;
 import edu.com.beginnings.service.vinculo.ComidaService;
+import edu.com.beginnings.mensaje.RespuestaDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/vinculo/comidas")
@@ -63,10 +59,10 @@ public class ComidaController {
     }
 
     @PutMapping("/modificar/{id}")
-    public ResponseEntity<Map<String, Object>> modificar(@PathVariable Integer id, @Valid @RequestBody ComidaUpdateDTO comidaUpdateDTO) {
+    public ResponseEntity<RespuestaDTO> modificar(@PathVariable Integer id, @Valid @RequestBody ComidaUpdateDTO comidaUpdateDTO) {
 
-        Map<String, Object> respuestayresponse = comidaService.modificarComida(comidaUpdateDTO, id);
-        return ResponseEntity.status(200).body(respuestayresponse);
+        RespuestaDTO response_data = comidaService.modificarComida(comidaUpdateDTO, id);
+        return ResponseEntity.status(200).body(response_data);
     }
 
     //eliminar

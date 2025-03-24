@@ -5,23 +5,20 @@ import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
 import edu.com.beginnings.map.vinculo.ComidaMapper;
+import edu.com.beginnings.mensaje.MensajeRespuesta;
 import edu.com.beginnings.model.vinculo.Categoria;
 import edu.com.beginnings.model.vinculo.Comida;
 import edu.com.beginnings.repo.vinculo.CategoriaRepo;
 import edu.com.beginnings.repo.vinculo.ComidaRepo;
 import edu.com.beginnings.service.vinculo.ComidaService;
+import edu.com.beginnings.mensaje.RespuestaDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -92,7 +89,7 @@ public class ComidaServiceImpl implements ComidaService {
     }
 
     @Override
-    public Map<String,Object> modificarComida(ComidaUpdateDTO comidaUpdateDTO, Integer id) {
+    public RespuestaDTO modificarComida(ComidaUpdateDTO comidaUpdateDTO, Integer id) {
 
         // Buscar la comida en la BD
         Comida comida = comidaRepo.findById(id)
@@ -114,7 +111,6 @@ public class ComidaServiceImpl implements ComidaService {
         if (comidaUpdateDTO.fechaFin() != null) {
             comida.setFechaFin(comidaUpdateDTO.fechaFin());
         }
-
         //modificacion de la categoria
         if (comidaUpdateDTO.categoriaId() != null) {
             Categoria categoria = categoriaRepo.findById(comidaUpdateDTO.categoriaId())
@@ -122,18 +118,13 @@ public class ComidaServiceImpl implements ComidaService {
 
             comida.setCategoria(categoria);
         }
-
         //guardar los cambios
         comida = comidaRepo.save(comida);
 
         //Construir respuesta con mensaje
-        Map<String,Object> response = new LinkedHashMap<>();
-        response.put("mensaje","Modificacion realizada con exito");
-        response.put("data",comidaMapper.comidaResponseDTO(comida));
+        ComidaResponseDTO dataDTO = comidaMapper.comidaResponseDTO(comida);
 
-
-
-        return response;
+        return new RespuestaDTO(MensajeRespuesta.MODIFICACION_EXITOSA.getMensaje(), dataDTO);
     }
 
     @Override
