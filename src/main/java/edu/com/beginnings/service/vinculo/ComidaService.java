@@ -4,8 +4,10 @@ import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
 import edu.com.beginnings.model.vinculo.Comida;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ComidaService {
 
@@ -20,7 +22,8 @@ public interface ComidaService {
     ComidaResponseDTO registrarComida(ComidaRequestDTO comidaRequestDTO);
 
     //modificar comida
-    ComidaResponseDTO modificarComida(ComidaUpdateDTO comidaUpdateDTO , Integer id);
+    Map<String, Object>modificarComida(ComidaUpdateDTO comidaUpdateDTO, Integer id);
+    //ComidaResponseDTO modificarComida(ComidaUpdateDTO comidaUpdateDTO , Integer id);
 
     //eliminar comiad
     void eliminarComida(Integer id);

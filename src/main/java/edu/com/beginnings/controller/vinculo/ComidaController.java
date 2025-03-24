@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/vinculo/comidas")
@@ -45,10 +46,10 @@ public class ComidaController {
     }
 
     @PutMapping("/modificar/{id}")
-    public ResponseEntity<ComidaResponseDTO> modificar(@PathVariable Integer id, @Valid @RequestBody ComidaUpdateDTO comidaUpdateDTO) {
+    public ResponseEntity<Map<String, Object>> modificar(@PathVariable Integer id, @Valid @RequestBody ComidaUpdateDTO comidaUpdateDTO) {
 
-        ComidaResponseDTO modificado =  comidaService.modificarComida(comidaUpdateDTO,id);
-        return ResponseEntity.status(200).body(modificado);
+        Map<String, Object> respuestayresponse = comidaService.modificarComida(comidaUpdateDTO, id);
+        return ResponseEntity.status(200).body(respuestayresponse);
     }
 
     //eliminar

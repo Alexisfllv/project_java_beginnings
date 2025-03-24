@@ -15,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -82,7 +85,7 @@ public class ComidaServiceImpl implements ComidaService {
     }
 
     @Override
-    public ComidaResponseDTO modificarComida(ComidaUpdateDTO comidaUpdateDTO,Integer id) {
+    public Map<String,Object> modificarComida(ComidaUpdateDTO comidaUpdateDTO, Integer id) {
 
         // Buscar la comida en la BD
         Comida comida = comidaRepo.findById(id)
@@ -116,7 +119,14 @@ public class ComidaServiceImpl implements ComidaService {
         //guardar los cambios
         comida = comidaRepo.save(comida);
 
-        return comidaMapper.comidaResponseDTO(comida);
+        //Construir respuesta con mensaje
+        Map<String,Object> response = new LinkedHashMap<>();
+        response.put("mensaje","Modificacion realizada con exito");
+        response.put("data",comidaMapper.comidaResponseDTO(comida));
+
+
+
+        return response;
     }
 
     @Override
