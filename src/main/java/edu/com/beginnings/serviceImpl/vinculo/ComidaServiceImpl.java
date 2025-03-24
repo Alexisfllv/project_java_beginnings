@@ -8,6 +8,7 @@ import edu.com.beginnings.map.vinculo.ComidaMapper;
 import edu.com.beginnings.mensaje.MensajeRespuesta;
 import edu.com.beginnings.model.vinculo.Categoria;
 import edu.com.beginnings.model.vinculo.Comida;
+import edu.com.beginnings.paginador.PaginaRespuestaDTO;
 import edu.com.beginnings.repo.vinculo.CategoriaRepo;
 import edu.com.beginnings.repo.vinculo.ComidaRepo;
 import edu.com.beginnings.service.vinculo.ComidaService;
@@ -45,8 +46,10 @@ public class ComidaServiceImpl implements ComidaService {
 
     //listar page / poli
     @Override
-    public Page<ComidaResponseDTO> listarComidas(Pageable pageable) {
-        return comidaRepo.findAll(pageable).map(comidaMapper::comidaResponseDTO);
+    public PaginaRespuestaDTO<ComidaResponseDTO> listarComidas(Pageable pageable) {
+        Page<ComidaResponseDTO> pagina = comidaRepo.findAll(pageable)
+                .map(comida -> comidaMapper.comidaResponseDTO(comida));
+        return new PaginaRespuestaDTO<>(pagina);
     }
 
     //buscar por id

@@ -4,14 +4,18 @@ package edu.com.beginnings.controller.vinculo;
 import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
+import edu.com.beginnings.paginador.PaginaRespuestaDTO;
 import edu.com.beginnings.service.vinculo.ComidaService;
 import edu.com.beginnings.mensaje.RespuestaDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/vinculo/comidas")
@@ -24,18 +28,17 @@ public class ComidaController {
 
     //listar comidas con detallas
     @GetMapping("/listar")
-    public ResponseEntity<?> listarComidas(
-
-            //paginador
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer size
-
-    ) {
-        if (page != null && size != null) {
-            Pageable pageable = PageRequest.of(page, size);
-            return ResponseEntity.ok(comidaService.listarComidas(pageable));
-        }
+    public ResponseEntity<List<ComidaResponseDTO>> listarComidas() {
         return ResponseEntity.status(200).body(comidaService.listarComidas());
+    }
+
+    @GetMapping("/listar-page")
+    public ResponseEntity<PaginaRespuestaDTO<ComidaResponseDTO>> listarComidasPaginadas(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "3") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(comidaService.listarComidas(pageable));
     }
 
     // Comida service

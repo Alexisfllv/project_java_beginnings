@@ -4,6 +4,7 @@ import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
 import edu.com.beginnings.mensaje.RespuestaDTO;
+import edu.com.beginnings.paginador.PaginaRespuestaDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -15,7 +16,7 @@ public interface ComidaService {
     List<ComidaResponseDTO> listarComidas();
 
     //listar Con paginador //poli
-    Page<ComidaResponseDTO> listarComidas(Pageable pageable);
+    PaginaRespuestaDTO<ComidaResponseDTO> listarComidas(Pageable pageable);
 
 
     //buscar por id de comidas
