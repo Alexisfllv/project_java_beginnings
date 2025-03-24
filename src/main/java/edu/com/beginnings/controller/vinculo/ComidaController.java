@@ -53,9 +53,9 @@ public class ComidaController {
 
 
     @PostMapping("/registrar")
-    public ResponseEntity<ComidaResponseDTO> registrar(@Valid  @RequestBody ComidaRequestDTO comidaRequestDTO) {
-        ComidaResponseDTO registro = comidaService.registrarComida(comidaRequestDTO);
-        return ResponseEntity.status(201).body(registro);
+    public ResponseEntity<RespuestaDTO> registrar(@Valid  @RequestBody ComidaRequestDTO comidaRequestDTO) {
+        RespuestaDTO response_data = comidaService.registrarComida(comidaRequestDTO);
+        return ResponseEntity.status(201).body(response_data);
     }
 
     @PutMapping("/modificar/{id}")
@@ -68,9 +68,9 @@ public class ComidaController {
     //eliminar
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        comidaService.eliminarComida(id);
-        return ResponseEntity.status(204).build();
+    public ResponseEntity<RespuestaDTO> eliminar(@PathVariable Integer id) {
+        RespuestaDTO response_data = comidaService.eliminarComida(id);
+        return ResponseEntity.status(200).body(response_data);
     }
 
 }

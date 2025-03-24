@@ -22,14 +22,14 @@ public interface ComidaService {
     ComidaResponseDTO buscarComida(Integer id);
 
     //metodo de registrar comida
-    ComidaResponseDTO registrarComida(ComidaRequestDTO comidaRequestDTO);
+    RespuestaDTO registrarComida(ComidaRequestDTO comidaRequestDTO);
 
     //modificar comida
     RespuestaDTO modificarComida(ComidaUpdateDTO comidaUpdateDTO, Integer id);
     //ComidaResponseDTO modificarComida(ComidaUpdateDTO comidaUpdateDTO , Integer id);
 
     //eliminar comiad
-    void eliminarComida(Integer id);
+    RespuestaDTO eliminarComida(Integer id);
 
 
 

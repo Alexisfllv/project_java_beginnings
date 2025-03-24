@@ -60,7 +60,7 @@ public class ComidaServiceImpl implements ComidaService {
 
     //registrar
     @Override
-    public ComidaResponseDTO registrarComida(ComidaRequestDTO comidaRequestDTO) {
+    public RespuestaDTO registrarComida(ComidaRequestDTO comidaRequestDTO) {
 
         //bucar la id para ingresar
         Categoria categoria = categoriaRepo.findById(comidaRequestDTO.categoriaId())
@@ -85,7 +85,11 @@ public class ComidaServiceImpl implements ComidaService {
 
         //guardar al modelo comida
         comida = comidaRepo.save(comida);
-        return comidaMapper.comidaResponseDTO(comida);
+
+        //adaptar respuesta
+        ComidaResponseDTO responseDTO = comidaMapper.comidaResponseDTO(comida);
+
+        return new RespuestaDTO(MensajeRespuesta.AGREGADO_EXITOSO.getMensaje(), responseDTO);
     }
 
     @Override
@@ -128,8 +132,12 @@ public class ComidaServiceImpl implements ComidaService {
     }
 
     @Override
-    public void eliminarComida(Integer id) {
-        comidaRepo.deleteById(id);
+    public RespuestaDTO eliminarComida(Integer id) {
+        Comida comida = comidaRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comida no encontrada")); // Validar existencia
+        //
+        comidaRepo.delete(comida);
+        return new RespuestaDTO(MensajeRespuesta.ELIMINACION_EXITOSA.getMensaje(), id);
     }
 
     //
