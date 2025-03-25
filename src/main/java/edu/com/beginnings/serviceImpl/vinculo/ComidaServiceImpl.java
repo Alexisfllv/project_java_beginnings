@@ -4,6 +4,7 @@ package edu.com.beginnings.serviceImpl.vinculo;
 import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
+import edu.com.beginnings.dto.record.vinculo.busquedas.ComidaResponsePesoDTO;
 import edu.com.beginnings.excepcion.errores.DatosInvalidosException;
 import edu.com.beginnings.excepcion.errores.RecursoNoEncontradoException;
 import edu.com.beginnings.map.vinculo.ComidaMapper;
@@ -20,7 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,7 +51,7 @@ public class ComidaServiceImpl implements ComidaService {
 
     //listar page / poli
     @Override
-    public PaginaRespuestaDTO<ComidaResponseDTO> listarComidas(Pageable pageable) {
+    public PaginaRespuestaDTO<ComidaResponseDTO> listarComidasp(Pageable pageable) {
         Page<ComidaResponseDTO> pagina = comidaRepo.findAll(pageable)
                 .map(comida -> comidaMapper.comidaResponseDTO(comida));
 
@@ -146,6 +149,25 @@ public class ComidaServiceImpl implements ComidaService {
         comidaRepo.delete(comida);
         return new RespuestaDTO(MensajeRespuesta.ELIMINACION_EXITOSA.getMensaje(), id);
     }
+
+
+    //metodo de busqueda por peso mayor
+
+    @Override
+    public PaginaRespuestaDTO<ComidaResponsePesoDTO> buscarComidasPesoMayorPesoPaginado(BigDecimal peso,Pageable pageable) {
+
+        Page<Comida> pagina = comidaRepo.buscarComidasPesoMayorPesoPaginado(peso,pageable);
+
+        // convertir cada comida en comidaResponsePesoDTO usando map
+        Page<ComidaResponsePesoDTO> paginaDTO = pagina.map(comida -> comidaMapper.comidaResponsePesoDTO(comida));
+
+        return new PaginaRespuestaDTO<>(paginaDTO);
+
+    }
+
+
+
+
 
 
 }

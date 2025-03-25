@@ -4,7 +4,10 @@ package edu.com.beginnings.controller.vinculo;
 import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
+import edu.com.beginnings.dto.record.vinculo.busquedas.ComidaResponsePesoDTO;
+import edu.com.beginnings.model.vinculo.Comida;
 import edu.com.beginnings.paginador.PaginaRespuestaDTO;
+import edu.com.beginnings.repo.vinculo.ComidaRepo;
 import edu.com.beginnings.service.vinculo.ComidaService;
 import edu.com.beginnings.mensaje.RespuestaDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,9 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
@@ -27,6 +32,7 @@ public class ComidaController {
 
     //ioc
     private final ComidaService comidaService;
+
 
 
     //listar comidas con detallas
@@ -42,7 +48,7 @@ public class ComidaController {
             @RequestParam(defaultValue = "3") Integer size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(comidaService.listarComidas(pageable));
+        return ResponseEntity.ok(comidaService.listarComidasp(pageable));
     }
 
     // Comida service
@@ -79,5 +85,18 @@ public class ComidaController {
         RespuestaDTO response_data = comidaService.eliminarComida(id);
         return ResponseEntity.status(200).body(response_data);
     }
+
+
+    // busqueda jpql buscar por peso mayor
+    @GetMapping("/buscar/mayorpeso/{peso}/listar-page")
+    public ResponseEntity<PaginaRespuestaDTO<ComidaResponsePesoDTO>> buscarMayorPeso(@PathVariable BigDecimal peso,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "3") Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.status(200).body(comidaService.buscarComidasPesoMayorPesoPaginado(peso,pageable));
+    }
+
+
 
 }

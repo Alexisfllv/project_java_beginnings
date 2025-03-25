@@ -42,9 +42,4 @@ public class Comida {
     @JoinColumn(name = "categoria_id", nullable = false) // No permite NULL
     private Categoria categoria;
 
-//    //fk
-//    @ManyToOne(cascade = CascadeType.REMOVE) // Borra comidas en cascada
-//    @JoinColumn(name = "categoria_id", nullable = true)
-//    private Categoria categoria;
-
 }

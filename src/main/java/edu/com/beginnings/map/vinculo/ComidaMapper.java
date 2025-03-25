@@ -4,6 +4,7 @@ package edu.com.beginnings.map.vinculo;
 import edu.com.beginnings.dto.record.vinculo.ComidaDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
+import edu.com.beginnings.dto.record.vinculo.busquedas.ComidaResponsePesoDTO;
 import edu.com.beginnings.model.vinculo.Comida;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,5 +25,9 @@ public interface ComidaMapper {
 
     @Mapping(target = "categoria.id" , source = "categoriaId")
     Comida comidaReq(ComidaRequestDTO comidaRequestDTO);
+
+    //mapper para listado de busqueda
+
+    ComidaResponsePesoDTO comidaResponsePesoDTO(Comida comida);
 
 }
