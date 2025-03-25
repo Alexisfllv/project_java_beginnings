@@ -4,6 +4,8 @@ package edu.com.beginnings.serviceImpl.vinculo;
 import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
 import edu.com.beginnings.dto.record.vinculo.ComidaUpdateDTO;
+import edu.com.beginnings.excepcion.errores.DatosInvalidosException;
+import edu.com.beginnings.excepcion.errores.RecursoNoEncontradoException;
 import edu.com.beginnings.map.vinculo.ComidaMapper;
 import edu.com.beginnings.mensaje.MensajeRespuesta;
 import edu.com.beginnings.model.vinculo.Categoria;
@@ -49,13 +51,15 @@ public class ComidaServiceImpl implements ComidaService {
     public PaginaRespuestaDTO<ComidaResponseDTO> listarComidas(Pageable pageable) {
         Page<ComidaResponseDTO> pagina = comidaRepo.findAll(pageable)
                 .map(comida -> comidaMapper.comidaResponseDTO(comida));
+
         return new PaginaRespuestaDTO<>(pagina);
     }
 
     //buscar por id
     @Override
     public ComidaResponseDTO buscarComida(Integer id) {
-        Comida comida = comidaRepo.findById(id).get();
+        Comida comida = comidaRepo.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Comida no encontrada: " + id));
 
         return comidaMapper.comidaResponseDTO(comida);
     }
@@ -67,7 +71,7 @@ public class ComidaServiceImpl implements ComidaService {
 
         //bucar la id para ingresar
         Categoria categoria = categoriaRepo.findById(comidaRequestDTO.categoriaId())
-                .orElseThrow(() -> new RuntimeException("Id Categoria no encontrado"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Id Categoria no encontrado : " + comidaRequestDTO.categoriaId()));
 
         Comida comida = comidaMapper.comidaReq(comidaRequestDTO);
         //enviar la categoria registrada
@@ -100,7 +104,7 @@ public class ComidaServiceImpl implements ComidaService {
 
         // Buscar la comida en la BD
         Comida comida = comidaRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comida no encontrada"));
+                .orElseThrow(() -> new RecursoNoEncontradoException("Comida no encontrada : " + id));
 
         //Actualizar Valores
         if (comidaUpdateDTO.nombre() != null) {
@@ -137,11 +141,11 @@ public class ComidaServiceImpl implements ComidaService {
     @Override
     public RespuestaDTO eliminarComida(Integer id) {
         Comida comida = comidaRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comida no encontrada")); // Validar existencia
+                .orElseThrow(() -> new RecursoNoEncontradoException("Comida no encontrada : " + id)); // Validar existencia
         //
         comidaRepo.delete(comida);
         return new RespuestaDTO(MensajeRespuesta.ELIMINACION_EXITOSA.getMensaje(), id);
     }
 
-    //
+
 }
