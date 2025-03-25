@@ -1,7 +1,6 @@
 package edu.com.beginnings.repo.vinculo;
 
-import edu.com.beginnings.dto.record.vinculo.ComidaResponseDTO;
-import edu.com.beginnings.dto.record.vinculo.busquedas.ComidaResponsePesoDTO;
+
 import edu.com.beginnings.model.vinculo.Comida;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
