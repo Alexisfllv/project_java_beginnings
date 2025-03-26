@@ -1,180 +1,268 @@
-```markdown
-# 🍽️ Servicio de Gestión de Alimentos - Documentación Completa
+# 🍽️ Sistema de Gestión de Alimentos 
 
-## 🌟 Descripción General
-API REST para administración de comidas y categorías con operaciones CRUD, validación avanzada, paginación y manejo profesional de errores. Ideal para sistemas de inventario de alimentos.
+## 1. Configuración del Proyecto
 
----
+### 1.1 Dependencias (pom.xml)
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.3</version>
+    </parent>
 
-## 🛠️ Configuración Técnica
+    <dependencies>
+        <!-- Spring Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
 
-### `application.properties`
+        <!-- MySQL Connector -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- MapStruct para mapeo de objetos -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+### 1.2 Configuración de Aplicación (application.properties)
 ```properties
-# Config Base
-spring.application.name=beginnings
-
-# MySQL Config
-spring.datasource.url=jdbc:mysql://localhost:3306/beginning_java?createDatabaseIfNotExist=true
+# Configuración de Base de Datos
+spring.datasource.url=jdbc:mysql://localhost:3306/beginning_java
 spring.datasource.username=root
 spring.datasource.password=deadmau5
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
-# JPA/Hibernate
-spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+# Configuración JPA
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
-
-# Swagger
-springdoc.api-docs.path=/v3/api-docs
-springdoc.swagger-ui.path=/swagger-ui.html
 ```
 
-### 🗃️ Esquema de Base de Datos (ASCII)
-```
-CATEGORIAS
-+---------------+-------------+------+-----+---------+----------------+
-| categoria_id  | int(11)     | PRI  | NO  | AUTO_INC|                |
-| nombre        | varchar(255)| NO   |     |         |                |
-+---------------+-------------+------+-----+---------+----------------+
+## 2. Modelos
 
-COMIDAS
-+-------------------+--------------+------+-----+---------+----------------+
-| comida_id         | int(11)      | PRI  | NO  | AUTO_INC|                |
-| nombre            | varchar(50)  | NO   |     |         |                |
-| cantidad          | int(11)      | NO   |     |         |                |
-| peso              | decimal(10,3)| NO   |     |         |                |
-| fecha_inicio      | datetime     | YES  |     |         |                |
-| fecha_fin         | datetime     | YES  |     |         |                |
-| categoria_id      | int(11)      | MUL  | NO  |         | FOREIGN KEY    |
-+-------------------+--------------+------+-----+---------+----------------+
-```
-
----
-
-## 📦 Dependencias Clave (`pom.xml`)
-```xml
-<dependencies>
-    <!-- Spring Boot Core -->
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-validation</artifactId>
-    </dependency>
-
-    <!-- MySQL Driver -->
-    <dependency>
-        <groupId>com.mysql</groupId>
-        <artifactId>mysql-connector-j</artifactId>
-        <scope>runtime</scope>
-    </dependency>
-
-    <!-- Lombok & MapStruct -->
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.mapstruct</groupId>
-        <artifactId>mapstruct</artifactId>
-        <version>1.6.3</version>
-    </dependency>
-
-    <!-- Swagger UI -->
-    <dependency>
-        <groupId>org.springdoc</groupId>
-        <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-        <version>2.8.6</version>
-    </dependency>
-</dependencies>
-```
-
----
-
-## 🧩 Componentes Principales
-
-### 🎯 Endpoints
-| Método | Ruta                                  | Descripción                     |
-|--------|---------------------------------------|---------------------------------|
-| GET    | `/vinculo/comidas/listar-page`        | Listado paginado con filtros    |
-| POST   | `/vinculo/categorias/registrar`       | Crear nueva categoría           |
-| PUT    | `/vinculo/comidas/modificar/{id}`     | Actualizar comida completa      |
-
-### 🔄 Flujo de Datos
-```
-Cliente -> Controller -> Service -> Repository -> DB
-                             ↑
-Mapper (DTO <-> Entidad) <- Validaciones
-```
-
----
-
-## 🚨 Manejo de Errores
+### 2.1 Modelo Categoria
 ```java
-// Ejemplo: Recurso no encontrado
-@ExceptionHandler(RecursoNoEncontradoException.class)
-public ResponseEntity<Map<String, Object>> handleNotFound(...) {
-    return ResponseEntity.status(404).body(Map.of(
-        "error": "Not Found",
-        "mensaje": "La comida con ID 999 no existe"
-    ));
+@Entity
+@Table(name = "categorias")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Categoria {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "categoria_id")
+    private Integer id;
+
+    @Column(name = "categoria_nombre")
+    private String nombre;
 }
 ```
 
----
+### 2.2 Modelo Comida
+```java
+@Entity
+@Table(name = "comidas")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Comida {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comida_id")
+    private Integer id;
 
-## 📊 Calificación Técnica Personalizada
+    @Column(name = "comida_nombre", nullable = false)
+    private String nombre;
 
-### 🔍 Criterios de Evaluación
-| Categoría           | Puntaje | Comentarios                                      |
-|----------------------|---------|-------------------------------------------------|
-| Arquitectura         | 9/10    | Buen uso de capas, podría mejorar caching       |
-| Documentación        | 8/10    | Faltan ejemplos de requests                     |
-| Manejo de Errores    | 9.5/10  | Excepciones personalizadas muy completas        |
-| Performance          | 8.5/10  | Paginación bien implementada                    |
-| Seguridad            | 4/10    | No hay autenticación (se sugiere agregar JWT)   |
-| Código Limpio        | 9/10    | Uso ejemplar de Lombok y MapStruct              |
+    @Column(name = "producto_cantidad", nullable = false)
+    private Integer cantidad;
 
-### ⚖️ Puntuación Final: 8.7/10
-
-**Fortalezas Destacadas:**
-- ✅ Implementación sólida de DTOs y validaciones
-- ✅ Paginación profesional con `Pageable`
-- ✅ Documentación Swagger integrada
-- ✅ Mapeo eficiente con MapStruct
-
-**Áreas de Mejora:**
-- 🔄 Agregar autenticación con Spring Security
-- 🔄 Implementar logging estructurado
-- 🔄 Añadir pruebas de integración
-- 🔄 Configurar conexión pool para MySQL
-
----
-
-## 📌 Cómo Contribuir
-1. Clona el repositorio
-2. Configura MySQL local con las credenciales del `application.properties`
-3. Ejecuta con:
-```bash
-mvn spring-boot:run
+    @ManyToOne
+    @JoinColumn(name = "categoria_id", nullable = false)
+    private Categoria categoria;
+}
 ```
-4. Accede a Swagger en: `http://localhost:8080/swagger-ui.html`
 
----
+## 3. DTOs (Data Transfer Objects)
 
-**⭐ ¡Proyecto listo para producción con mejoras incrementales!**  
-**📅 Última actualización: Octubre 2023**
-``` 
+### 3.1 CategoriaDTO
+```java
+public record CategoriaDTO(
+    Integer id,
+    String nombre
+) {}
+```
 
-Este archivo está optimizado para GitHub con:
-- Emojis visuales
-- Sintaxis MD mejorada
-- Secciones colapsables
-- Tablas comparativas
-- Destacado de código
-- Llamados a acción claros
+### 3.2 ComidaDTO
+```java
+public record ComidaDTO(
+    Integer id,
+    String nombre,
+    Integer cantidad,
+    CategoriaDTO categoria
+) {}
+```
 
-¡Perfecto para usar como `README.md` en tu repositorio! 🚀
+## 4. Repositorios
+
+### 4.1 CategoriaRepository
+```java
+@Repository
+public interface CategoriaRepo extends JpaRepository<Categoria, Integer> {
+    // Métodos de búsqueda personalizados
+    Optional<Categoria> findByNombre(String nombre);
+}
+```
+
+### 4.2 ComidaRepository
+```java
+@Repository
+public interface ComidaRepo extends JpaRepository<Comida, Integer> {
+    // Búsqueda por categoría
+    List<Comida> findByCategoriaId(Integer categoriaId);
+
+    // Búsqueda paginada
+    Page<Comida> findByCantidadGreaterThan(Integer cantidad, Pageable pageable);
+}
+```
+
+## 5. Mappers
+
+### 5.1 CategoriaMapper
+```java
+@Mapper(componentModel = "spring")
+public interface CategoriaMapper {
+    CategoriaDTO toDTO(Categoria categoria);
+    Categoria toEntity(CategoriaDTO categoriaDTO);
+}
+```
+
+### 5.2 ComidaMapper
+```java
+@Mapper(componentModel = "spring", uses = {CategoriaMapper.class})
+public interface ComidaMapper {
+    ComidaDTO toDTO(Comida comida);
+    Comida toEntity(ComidaDTO comidaDTO);
+}
+```
+
+## 6. Servicios
+
+### 6.1 CategoriaService
+```java
+public interface CategoriaService {
+    List<CategoriaDTO> listarTodas();
+    CategoriaDTO crear(CategoriaDTO categoriaDTO);
+    CategoriaDTO actualizar(Integer id, CategoriaDTO categoriaDTO);
+    void eliminar(Integer id);
+}
+```
+
+### 6.2 Implementación de CategoriaService
+```java
+@Service
+@RequiredArgsConstructor
+public class CategoriaServiceImpl implements CategoriaService {
+    private final CategoriaRepo categoriaRepo;
+    private final CategoriaMapper categoriaMapper;
+
+    @Override
+    public List<CategoriaDTO> listarTodas() {
+        return categoriaRepo.findAll().stream()
+            .map(categoriaMapper::toDTO)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public CategoriaDTO crear(CategoriaDTO categoriaDTO) {
+        Categoria categoria = categoriaMapper.toEntity(categoriaDTO);
+        categoria = categoriaRepo.save(categoria);
+        return categoriaMapper.toDTO(categoria);
+    }
+}
+```
+
+## 7. Controladores
+
+### 7.1 CategoriaController
+```java
+@RestController
+@RequestMapping("/categorias")
+@RequiredArgsConstructor
+public class CategoriaController {
+    private final CategoriaService categoriaService;
+
+    @GetMapping
+    public List<CategoriaDTO> listarCategorias() {
+        return categoriaService.listarTodas();
+    }
+
+    @PostMapping
+    public CategoriaDTO crearCategoria(@RequestBody CategoriaDTO categoriaDTO) {
+        return categoriaService.crear(categoriaDTO);
+    }
+}
+```
+
+## 8. Manejo de Excepciones
+
+### 8.1 Excepciones Personalizadas
+```java
+public class RecursoNoEncontradoException extends RuntimeException {
+    public RecursoNoEncontradoException(String mensaje) {
+        super(mensaje);
+    }
+}
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+    @ExceptionHandler(RecursoNoEncontradoException.class)
+    public ResponseEntity<ErrorResponse> handleRecursoNoEncontrado(RecursoNoEncontradoException ex) {
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.NOT_FOUND.value(), 
+            ex.getMessage()
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+}
+```
+
+## 9. Estructura de Carpetas
+
+```
+src/main/java/edu/com/beginnings/
+├── controller/
+│   ├── CategoriaController.java
+│   └── ComidaController.java
+├── model/
+│   ├── Categoria.java
+│   └── Comida.java
+├── repository/
+│   ├── CategoriaRepo.java
+│   └── ComidaRepo.java
+├── service/
+│   ├── CategoriaService.java
+│   └── ComidaServiceImpl.java
+└── dto/
+    ├── CategoriaDTO.java
+    └── ComidaDTO.java
+```
+
+## 10. Consideraciones Finales
+
+- Utiliza Java 21
+- Arquitectura por capas
+- Validaciones integradas
+- Mapeo automático con MapStruct
+- Manejo de excepciones centralizado
