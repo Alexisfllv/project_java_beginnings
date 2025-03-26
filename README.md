@@ -1,3 +1,5 @@
+
+``` bash
 src/main/java/com/tuempresa/proyecto
 │── config/           # Configuraciones (CORS, seguridad, etc.)
 │── controller/       # Controladores (APIs REST)
@@ -14,4 +16,4 @@ src/main/java/com/tuempresa/proyecto
 │── MainApplication.java  # Clase principal de Spring Boot
 │── response/         # Clases para respuestas estándar
 │── pagination/       # Clases para manejar paginación
-
+```
