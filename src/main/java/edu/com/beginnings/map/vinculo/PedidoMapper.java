@@ -16,11 +16,11 @@ public interface PedidoMapper {
     Pedido toPedido(PedidoDTO pedidoDTO);
 
     PedidoResponseDTO toPedidoResponseDTO(Pedido pedido);
-    Pedido toPedido(PedidoRequestDTO pedidoRequestDTO);
+    Pedido toPedido(PedidoResponseDTO pedidoResponseDTO);
 
-    ComidaRequestDTO toComidaRequestDTO(PedidoRequestDTO pedidoRequestDTO);
+    ComidaRequestDTO toPedidoRequestDTO(Pedido pedido);
 
     @Mapping(target = "suministro.id" , source = "suministroId")
     @Mapping(target = "cliente.id", source = "clienteId")
-    Pedido toPedido(ComidaRequestDTO comidaRequestDTO);
+    Pedido toPedido(PedidoRequestDTO pedidoRequestDTO);
 }

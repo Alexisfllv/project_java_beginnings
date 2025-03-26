@@ -7,6 +7,7 @@ public record PedidoResponseDTO(
         LocalDate fecha,
         BigDecimal total,
         String estado,
-        ClienteDTO cliente
+        ClienteDTO cliente,
+        SuministroDTO suministro
 ) {
 }

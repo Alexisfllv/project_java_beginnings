@@ -19,8 +19,8 @@ public interface PedidoService {
     PedidoResponseDTO registrarPedido(PedidoRequestDTO pedidoRequestDTO);
 
     //modificar
-    PedidoResponseDTO actualizar(PedidoUpdateDTO pedidoUpdateDTO);
+    PedidoResponseDTO actualizarPedido(PedidoUpdateDTO pedidoUpdateDTO);
 
     //eliminar
-    void eliminar(Integer id);
+    void eliminarPedido(Integer id);
 }

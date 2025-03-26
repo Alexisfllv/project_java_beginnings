@@ -8,6 +8,7 @@ public record PedidoUpdateDTO(
         LocalDate fecha,
         BigDecimal total,
         String estado,
-        Integer clienteId
+        Integer clienteId,
+        Integer suministroId
 ) {
 }
