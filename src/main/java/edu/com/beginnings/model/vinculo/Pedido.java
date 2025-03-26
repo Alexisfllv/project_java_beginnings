@@ -21,7 +21,7 @@ public class Pedido {
     @Column(name = "pedido_id")
     private Integer id;
 
-    @Column(name = "pedido_fecha", nullable = false)
+    @Column(name = "pedido_fecha", nullable = true)
     private LocalDate fecha;
 
     @Column(name = "producto_total", precision = 10, scale = 3, nullable = false)
@@ -35,6 +35,10 @@ public class Pedido {
     @JoinColumn(name = "cliente_id" , nullable = false)
     private Cliente cliente;
 
+    // M:1
+    @ManyToOne
+    @JoinColumn(name = "suministro_id" , nullable = false)
+    private Suministro suministro;
 
 
 }

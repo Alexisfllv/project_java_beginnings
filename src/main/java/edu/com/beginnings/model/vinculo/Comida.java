@@ -40,6 +40,8 @@ public class Comida {
     //fk
     @ManyToOne                //defecto
     @JoinColumn(name = "categoria_id", nullable = false) // No permite NULL
-    private Categoria categoria;
+    private Categoria categoria; //target
+
+
 
 }
