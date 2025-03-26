@@ -15,7 +15,7 @@ public interface CategoriaMapper {
     Categoria categoria(CategoriaDTO categoriaDTO);
 
     //req
-    CategoriaRequestDTO categoriaRequestDTO(CategoriaRequestDTO categoriaRequestDTO);
+    CategoriaRequestDTO categoriaRequestDTO(Categoria categoria);
     Categoria categoriaReq(CategoriaRequestDTO categoriaRequestDTO);
 
     //res
