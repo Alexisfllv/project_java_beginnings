@@ -11,11 +11,16 @@ import org.mapstruct.Mapper;
 public interface ClienteMapper {
 
     ClienteDTO toclienteDTO(Cliente cliente);
+
     Cliente toCliente(ClienteDTO clienteDTO);
 
     ClienteResponseDTO toClienteResponseDTO(Cliente cliente);
+
     Cliente toCliente(ClienteResponseDTO clienteResponseDTO);
 
     ClienteRequestDTO toClienteRequestDTO(Cliente cliente);
+
     Cliente toCliente(ClienteRequestDTO clienteRequestDTO);
+
+
 }
