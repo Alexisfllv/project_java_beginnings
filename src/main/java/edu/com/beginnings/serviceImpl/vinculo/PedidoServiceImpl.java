@@ -158,6 +158,7 @@ public class PedidoServiceImpl implements PedidoService {
         if (pedidoUpdateDTO.suministroId() != null) {
             Suministro suministro = suministroRepo.findById(pedidoUpdateDTO.suministroId())
                     .orElseThrow(() -> new RecursoNoEncontradoException("id Suministro no encontrado : " + id));
+            pedido.setSuministro(suministro);
         }
 
         //guardar cambios
