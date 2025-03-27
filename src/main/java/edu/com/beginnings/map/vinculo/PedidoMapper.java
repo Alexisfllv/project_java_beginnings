@@ -4,6 +4,7 @@ import edu.com.beginnings.dto.record.vinculo.ComidaRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.pedidos.PedidoDTO;
 import edu.com.beginnings.dto.record.vinculo.pedidos.PedidoRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.pedidos.PedidoResponseDTO;
+import edu.com.beginnings.dto.record.vinculo.pedidos.PedidoResponseEliminarDTO;
 import edu.com.beginnings.model.vinculo.Pedido;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -23,4 +24,8 @@ public interface PedidoMapper {
     @Mapping(target = "suministro.id" , source = "suministroId")
     @Mapping(target = "cliente.id", source = "clienteId")
     Pedido toPedido(PedidoRequestDTO pedidoRequestDTO);
+
+    //vista de eliminar
+    PedidoResponseEliminarDTO toPedidoResponseEliminarDTO(Pedido pedido);
+    Pedido toPedido(PedidoResponseEliminarDTO pedidoResponseEliminarDTO);
 }

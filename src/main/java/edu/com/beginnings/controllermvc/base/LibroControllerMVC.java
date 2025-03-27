@@ -23,12 +23,6 @@ public class LibroControllerMVC {
         this.libroService = libroService;
     }
 
-    // Listar libros
-//    @GetMapping("/lista")
-//    public String listarLibros(Model model) {
-//        model.addAttribute("libros", libroService.listarLibrosdto());
-//        return "libros/lista";
-//    }
 
     // Controlador - Mostrar lista sin fecha
     @GetMapping("/lista")
@@ -42,11 +36,9 @@ public class LibroControllerMVC {
     // Mostrar formulario (agregar o modificar)
     @GetMapping("/formulario")
     public String mostrarFormulario(@RequestParam(required = false) Integer id, Model model) {
-        if (id != null) {
-            model.addAttribute("libro", libroService.buscarDtoResponse(id));
-        } else {
-            model.addAttribute("libro", new LibroDTO());
-        }
+
+        model.addAttribute("libro", new LibroDTO());
+
         return "libros/formulario";
     }
 
