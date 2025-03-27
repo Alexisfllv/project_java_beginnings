@@ -1,4 +1,4 @@
-package edu.com.beginnings.serviceImpl;
+package edu.com.beginnings.serviceImpl.vinculo;
 
 import edu.com.beginnings.dto.record.vinculo.pedidos.ClienteRequestDTO;
 import edu.com.beginnings.dto.record.vinculo.pedidos.ClienteResponseDTO;
