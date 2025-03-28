@@ -18,12 +18,10 @@ public interface EmpleadoMapper {
     //listado full
 
     EmpleadoResponseDTO toEmpleadoResponseDTO(Empleado empleado);
-    // lista de empleadosDTOs =  List Empleado
-    List<EmpleadoResponseDTO> toEmpleadoResponseDTOList(List<Empleado> empleados);
 
     Empleado toEmpleado(EmpleadoResponseDTO empleadoResponseDTO);
 
     EmpleadoRequestDTO toEmpleadoRequestDTO(Empleado empleado);
-    @Mapping(target = "departamento.id" , source = "departamento")
+    @Mapping(target = "departamento.id" , source = "departamentoId")
     Empleado toEmpleado(EmpleadoRequestDTO empleadoRequestDTO);
 }

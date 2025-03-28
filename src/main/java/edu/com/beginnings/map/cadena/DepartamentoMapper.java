@@ -19,7 +19,7 @@ public interface DepartamentoMapper {
 
     DepartamentoRequestDTO toDepartamentoRequestDTO(Departamento departamento);
 
-    @Mapping(target = "empresa.id" , source = "empresa")
+    @Mapping(target = "empresa.id" , source = "empresaId")
     Departamento toDepartamento(DepartamentoRequestDTO departamentoRequestDTO);
 
 

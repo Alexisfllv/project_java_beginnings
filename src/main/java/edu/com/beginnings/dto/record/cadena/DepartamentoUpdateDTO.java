@@ -1,8 +1,7 @@
 package edu.com.beginnings.dto.record.cadena;
 
-public record EmpleadoRequestDTO(
-
+public record DepartamentoUpdateDTO(
         String nombre,
-        Integer departamentoId
+        Integer empresaId
 ) {
 }
