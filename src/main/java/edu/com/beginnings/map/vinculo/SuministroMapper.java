@@ -11,9 +11,6 @@ import org.mapstruct.Mapper;
 public interface SuministroMapper {
 
     //dto
-
-
-
     SuministroDTO toSuministroDTO(Suministro suministro);
     Suministro toSuministro(SuministroDTO suministroDTO);
 
