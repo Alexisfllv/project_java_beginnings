@@ -1,9 +1,7 @@
 package edu.com.beginnings.serviceImpl.red;
 
 
-import edu.com.beginnings.dto.red.AlumnoConCursosResponseDTO;
-import edu.com.beginnings.dto.red.AlumnoCursoFlatDTO;
-import edu.com.beginnings.dto.red.CursoDTO;
+import edu.com.beginnings.dto.red.*;
 import edu.com.beginnings.map.red.AlumnoMapper;
 import edu.com.beginnings.model.red.Alumno;
 import edu.com.beginnings.repo.red.AlumnoRepo;
@@ -100,6 +98,28 @@ public class AlumnoServiceImpl implements AlumnoService {
                 .stream()
                 .toList();
     }
+
+    @Override
+    public List<AlumnoConTalleresResponseDTO> listarAlumnosConTalleres() {
+        List<Alumno> alumnos = alumnoRepo.findAll();
+
+        return alumnos.stream()
+                .map(alumno -> alumnoMapper.toAlumnoConTalleresResponseDTO(alumno))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<AlumnoConCursosYTalleresResponseDTO> listadoCursoYTalleres() {
+        List<Alumno> alumnos = alumnoRepo.findAll();
+
+        return alumnos.stream()
+                .map(alumno -> alumnoMapper.toAlumnoConCursosYTalleresResponseDTO(alumno))
+                .collect(Collectors.toList());
+    }
+
+    //
+
 
 
 }

@@ -1,6 +1,8 @@
 package edu.com.beginnings.service.red;
 
 import edu.com.beginnings.dto.red.AlumnoConCursosResponseDTO;
+import edu.com.beginnings.dto.red.AlumnoConCursosYTalleresResponseDTO;
+import edu.com.beginnings.dto.red.AlumnoConTalleresResponseDTO;
 
 import java.util.List;
 
@@ -17,5 +19,12 @@ public interface AlumnoService {
 
     //NATIE QUERY
     List<AlumnoConCursosResponseDTO> findAlumnosConCursosPorCursoNative();
+
+
+    //listado alumnos con talleres
+    List<AlumnoConTalleresResponseDTO> listarAlumnosConTalleres();
+
+    //listado curso-talleres
+    List<AlumnoConCursosYTalleresResponseDTO> listadoCursoYTalleres();
 
 }

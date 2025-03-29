@@ -24,7 +24,19 @@ public class Alumno {
     private String nombre;
 
     @OneToMany(mappedBy = "alumno" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AlumnoCurso> alumnoCursos ;
+    private List<AlumnoCurso> alumnoCursos = new ArrayList<>();
+
+    //relacion teciaria
+    @ManyToMany
+    @JoinTable(
+            name = "alumno_talleres",
+            joinColumns = @JoinColumn(name = "alumno_id"),
+            inverseJoinColumns = @JoinColumn(name = "taller_id")
+    )
+    private List<Taller> talleres = new ArrayList<>();
+
+
+
 
 
 }
