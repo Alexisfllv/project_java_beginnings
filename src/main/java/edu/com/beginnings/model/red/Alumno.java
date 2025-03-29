@@ -29,7 +29,7 @@ public class Alumno {
     //relacion teciaria
     @ManyToMany
     @JoinTable(
-            name = "alumno_talleres",
+            name = "alumno_taller",
             joinColumns = @JoinColumn(name = "alumno_id"),
             inverseJoinColumns = @JoinColumn(name = "taller_id")
     )

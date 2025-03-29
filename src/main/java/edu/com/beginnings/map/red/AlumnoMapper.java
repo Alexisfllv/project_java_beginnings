@@ -15,43 +15,36 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface AlumnoMapper {
 
-    //Mapeo a response basico
-    AlumnoResponseDTO toAlumnoResponseDTO(Alumno alumno);
-    Alumno toAlumno(AlumnoResponseDTO alumnoResponseDTO);
-
-    // Conversión de Curso
-    CursoDTO toCursoDTO(Curso curso);
-    Curso toCurso(CursoDTO cursoDTO);
-
-    // Conversión de Taller
-    TallerDTO toTallerDTO(Taller taller);
-    Taller toTaller(TallerDTO tallerDTO);
-
-    // Mapeo para listado de alumnos con cursos
+    //
+    // Convertir Alumno a DTO de respuesta
     @Mapping(target = "cursos", source = "alumnoCursos", qualifiedByName = "mapCursos")
-    AlumnoConCursosResponseDTO toAlumnoConCursosResponseDTO(Alumno alumno);
+    @Mapping(target = "talleres", source = "talleres")
+    AlumnoResponseDTO toAlumnoResponseDTO(Alumno alumno);
 
+    // Convertir IDs de cursos a entidades AlumnoCurso (sin asignar alumno aún)
+//    @Named("mapAlumnoCursos")
+//    default List<AlumnoCurso> mapAlumnoCursos(List<Integer> cursoIds) {
+//        if (cursoIds == null) return List.of();
+//        return cursoIds.stream()
+//                .map(id -> new AlumnoCurso(null, null, new Curso(id, null), "ACTIVO"))
+//                .toList();
+//    }
+//
+//    // Convertir IDs de talleres a entidades Taller
+//    @Named("mapTalleres")
+//    default List<Taller> mapTalleres(List<Integer> tallerIds) {
+//        if (tallerIds == null) return List.of();
+//        return tallerIds.stream()
+//                .map(id -> new Taller(id, null))
+//                .toList()
+// }
+
+    // Convertir lista de AlumnoCurso a lista de CursoDTO
     @Named("mapCursos")
     default List<CursoDTO> mapCursos(List<AlumnoCurso> alumnoCursos) {
+        if (alumnoCursos == null) return List.of();
         return alumnoCursos.stream()
                 .map(ac -> new CursoDTO(ac.getCurso().getId(), ac.getCurso().getNombre()))
                 .toList();
     }
-
-    // Mapeo para listado de alumnos con talleres
-    @Mapping(target = "talleres", source = "talleres", qualifiedByName = "mapTalleres")
-    AlumnoConTalleresResponseDTO toAlumnoConTalleresResponseDTO(Alumno alumno);
-
-    @Named("mapTalleres")
-    default List<TallerDTO> mapTalleres(List<Taller> talleres) {
-        return talleres.stream()
-                .map(t -> new TallerDTO(t.getId(), t.getNombre()))
-                .toList();
-    }
-
-    //
-    // Mapeo para listado de alumnos con cursos y talleres
-    @Mapping(target = "cursos", source = "alumnoCursos", qualifiedByName = "mapCursos")
-    @Mapping(target = "talleres", source = "talleres")
-    AlumnoConCursosYTalleresResponseDTO toAlumnoConCursosYTalleresResponseDTO(Alumno alumno);
 }

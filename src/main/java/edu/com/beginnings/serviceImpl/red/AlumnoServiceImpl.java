@@ -4,7 +4,12 @@ package edu.com.beginnings.serviceImpl.red;
 import edu.com.beginnings.dto.red.*;
 import edu.com.beginnings.map.red.AlumnoMapper;
 import edu.com.beginnings.model.red.Alumno;
+import edu.com.beginnings.model.red.AlumnoCurso;
+import edu.com.beginnings.model.red.Curso;
+import edu.com.beginnings.model.red.Taller;
 import edu.com.beginnings.repo.red.AlumnoRepo;
+import edu.com.beginnings.repo.red.CursoRepo;
+import edu.com.beginnings.repo.red.TallerRepo;
 import edu.com.beginnings.service.red.AlumnoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,108 +22,48 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AlumnoServiceImpl implements AlumnoService {
 
+    //repos
     private final AlumnoRepo alumnoRepo;
+
+    private final CursoRepo cursoRepo;
+    private final TallerRepo tallerRepo;
 
     private final AlumnoMapper alumnoMapper;
 
 
     @Override
-    public List<AlumnoConCursosResponseDTO> listarAlumnosConCursos() {
-
+    public List<AlumnoResponseDTO> listarAlumnos() {
         List<Alumno> alumnos = alumnoRepo.findAll();
-
-        return alumnos
-                .stream()
-                .map(alumnocurso -> alumnoMapper.toAlumnoConCursosResponseDTO(alumnocurso))
-                .collect(Collectors.toList());
-
-    }
-
-    @Override
-    public AlumnoConCursosResponseDTO buscarAlumnoConCurso(Integer id) {
-        return null;
-    }
-
-    @Override
-    public List<AlumnoConCursosResponseDTO> findAlumnosConCursosPorCurso() {
-
-        return alumnoRepo.findAlumnosConCursos().stream()
-                .collect(Collectors.groupingBy(
-                        AlumnoCursoFlatDTO::alumnoId,
-                        LinkedHashMap::new,
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                lista -> new AlumnoConCursosResponseDTO(
-                                        lista.get(0).alumnoId(),
-                                        lista.get(0).alumnoNombre(),
-                                        lista.stream()
-                                                .map(f -> new CursoDTO(f.cursoId(), f.cursoNombre()))
-                                                .toList()
-                                )
-                        )
-                ))
-                .values()
-                .stream()
-                .toList();
-    }
-
-
-
-    @Override
-    public List<AlumnoConCursosResponseDTO> findAlumnosConCursosPorCursoNative() {
-        List<Object[]> resultados = alumnoRepo.findAlumnosConCursosNative();
-
-        // Convertir Object[] a AlumnoCursoFlatDTO
-        List<AlumnoCursoFlatDTO> listaFlat = resultados.stream()
-                .map(obj -> new AlumnoCursoFlatDTO(
-                        (Integer) obj[0],  // alumnoId
-                        (String) obj[1],   // alumnoNombre
-                        (Integer) obj[2],  // cursoId
-                        (String) obj[3]    // cursoNombre
-                ))
-                .toList();
-
-        // Agrupar por alumnoId y construir la respuesta final
-        return listaFlat.stream()
-                .collect(Collectors.groupingBy(
-                        AlumnoCursoFlatDTO::alumnoId,
-                        LinkedHashMap::new,
-                        Collectors.collectingAndThen(
-                                Collectors.toList(),
-                                lista -> new AlumnoConCursosResponseDTO(
-                                        lista.get(0).alumnoId(),
-                                        lista.get(0).alumnoNombre(),
-                                        lista.stream()
-                                                .map(f -> new CursoDTO(f.cursoId(), f.cursoNombre()))
-                                                .toList()
-                                )
-                        )
-                ))
-                .values()
-                .stream()
-                .toList();
-    }
-
-    @Override
-    public List<AlumnoConTalleresResponseDTO> listarAlumnosConTalleres() {
-        List<Alumno> alumnos = alumnoRepo.findAll();
-
         return alumnos.stream()
-                .map(alumno -> alumnoMapper.toAlumnoConTalleresResponseDTO(alumno))
+                .map(alumno -> alumnoMapper.toAlumnoResponseDTO(alumno))
                 .collect(Collectors.toList());
-
     }
 
     @Override
-    public List<AlumnoConCursosYTalleresResponseDTO> listadoCursoYTalleres() {
-        List<Alumno> alumnos = alumnoRepo.findAll();
+    public AlumnoResponseDTO registrar(AlumnoRequestDTO alumnoRequestDTO) {
+        // Crear alumno sin cursos ni talleres
+        Alumno alumno = new Alumno();
+        alumno.setNombre(alumnoRequestDTO.nombre());
 
-        return alumnos.stream()
-                .map(alumno -> alumnoMapper.toAlumnoConCursosYTalleresResponseDTO(alumno))
-                .collect(Collectors.toList());
+        // Recuperar cursos desde BD y asignar relaciones
+        List<Curso> cursos = cursoRepo.findAllById(alumnoRequestDTO.cursos());
+        List<AlumnoCurso> alumnoCursos = cursos.stream()
+                .map(curso -> new AlumnoCurso(null, alumno, curso, "ACTIVO"))
+                .toList();
+
+        // Recuperar talleres desde BD
+        List<Taller> talleres = tallerRepo.findAllById(alumnoRequestDTO.talleres());
+
+        // Asignar relaciones al alumno
+        alumno.setAlumnoCursos(alumnoCursos);
+        alumno.setTalleres(talleres);
+
+        // Guardar en BD
+        Alumno alumnoGuardado = alumnoRepo.save(alumno);
+
+        // Convertir a DTO de respuesta
+        return alumnoMapper.toAlumnoResponseDTO(alumnoGuardado);
     }
-
-    //
 
 
 

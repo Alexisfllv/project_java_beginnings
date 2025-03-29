@@ -23,7 +23,4 @@ public class Curso {
     @Column(name = "curso_nombre")
     private String nombre;
 
-
-
-
 }
