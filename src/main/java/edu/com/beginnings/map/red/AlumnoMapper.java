@@ -21,23 +21,7 @@ public interface AlumnoMapper {
     @Mapping(target = "talleres", source = "talleres")
     AlumnoResponseDTO toAlumnoResponseDTO(Alumno alumno);
 
-    // Convertir IDs de cursos a entidades AlumnoCurso (sin asignar alumno aún)
-//    @Named("mapAlumnoCursos")
-//    default List<AlumnoCurso> mapAlumnoCursos(List<Integer> cursoIds) {
-//        if (cursoIds == null) return List.of();
-//        return cursoIds.stream()
-//                .map(id -> new AlumnoCurso(null, null, new Curso(id, null), "ACTIVO"))
-//                .toList();
-//    }
-//
-//    // Convertir IDs de talleres a entidades Taller
-//    @Named("mapTalleres")
-//    default List<Taller> mapTalleres(List<Integer> tallerIds) {
-//        if (tallerIds == null) return List.of();
-//        return tallerIds.stream()
-//                .map(id -> new Taller(id, null))
-//                .toList()
-// }
+
 
     // Convertir lista de AlumnoCurso a lista de CursoDTO
     @Named("mapCursos")
