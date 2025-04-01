@@ -1,7 +1,9 @@
 package edu.com.beginnings.controller.red;
 
 
-import edu.com.beginnings.dto.red.*;
+import edu.com.beginnings.dto.record.red.AlumnoGlobalRequestDTO;
+import edu.com.beginnings.dto.record.red.AlumnoGlobalResponseDTO;
+
 import edu.com.beginnings.service.red.AlumnoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -19,24 +21,33 @@ public class AlumnoController {
     private final AlumnoService alumnoService;
 
 
+    //listar
+    @GetMapping("/listar")
+    public ResponseEntity<List<AlumnoGlobalResponseDTO>> listarAlumnos() {
+        List<AlumnoGlobalResponseDTO> alumnos = alumnoService.listadoAlumnos();
+        return ResponseEntity.status(200).body(alumnos);
+    }
+
     //registrar alumno-cursos-tallres
     @PostMapping("/registrar")
-    public ResponseEntity<AlumnoResponseDTO> registrar(@RequestBody AlumnoRequestDTO alumnoRequestDTO) {
-        AlumnoResponseDTO alumnoResponseDTO = alumnoService.registrar(alumnoRequestDTO);
-        return ResponseEntity.status(201).body(alumnoResponseDTO);
+    public ResponseEntity<AlumnoGlobalResponseDTO> registrar(@RequestBody AlumnoGlobalRequestDTO alumnoGlobalRequestDTO) {
+        AlumnoGlobalResponseDTO alumnoGlobalResponseDTO = alumnoService.crearAlumno(alumnoGlobalRequestDTO);
+        return ResponseEntity.status(201).body(alumnoGlobalResponseDTO);
     }
 
     //buscarId
     @GetMapping("/buscar/{id}")
-    public ResponseEntity<AlumnoResponseDTO> buscar(@PathVariable Integer id) {
-        AlumnoResponseDTO alumnoResponseDTO = alumnoService.buscarAlumnoPorId(id);
+    public ResponseEntity<AlumnoGlobalResponseDTO> buscar(@PathVariable Integer id) {
+        AlumnoGlobalResponseDTO alumnoResponseDTO = alumnoService.buscarAlumnoporid(id);
         return ResponseEntity.status(200).body(alumnoResponseDTO);
     }
 
-    //listar
-    @GetMapping("/listar")
-    public ResponseEntity<List<AlumnoResponseDTO>> listarAlumnos() {
-        List<AlumnoResponseDTO> alumnos = alumnoService.listarAlumnos();
-        return ResponseEntity.status(200).body(alumnos);
+    //eliminar
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        alumnoService.eliminarAlumno(id);
+        return ResponseEntity.status(200).build();
     }
+
+
 }

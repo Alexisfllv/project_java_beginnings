@@ -1,23 +1,29 @@
 package edu.com.beginnings.service.red;
 
-import edu.com.beginnings.dto.red.*;
+
+
+import edu.com.beginnings.dto.record.red.AlumnoGlobalRequestDTO;
+import edu.com.beginnings.dto.record.red.AlumnoGlobalResponseDTO;
+import edu.com.beginnings.dto.record.red.AlumnoGlobalUpdateDTO;
 
 import java.util.List;
 
 public interface AlumnoService {
 
+    //listas
+    List<AlumnoGlobalResponseDTO> listadoAlumnos();
 
+    //buscar id
+    AlumnoGlobalResponseDTO buscarAlumnoporid(Integer id);
 
-    //listado curso-talleres
-    List<AlumnoResponseDTO> listarAlumnos();
+    //registrado
+    AlumnoGlobalResponseDTO crearAlumno(AlumnoGlobalRequestDTO alumnoGlobalRequestDTO);
 
-    //buscar x id alumnos
-    AlumnoResponseDTO buscarAlumnoPorId(Integer id);
+    //modificar
+    AlumnoGlobalResponseDTO modificarAlumno(Integer id, AlumnoGlobalUpdateDTO alumnoGlobalUpdateDTO);
 
+    //eliminar
 
-    //request alumno
-    AlumnoResponseDTO registrar(AlumnoRequestDTO alumnoRequestDTO);
-
-
+    void eliminarAlumno(Integer id);
 
 }
