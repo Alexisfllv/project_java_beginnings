@@ -11,8 +11,13 @@ public interface AlumnoService {
     //listado curso-talleres
     List<AlumnoResponseDTO> listarAlumnos();
 
+    //buscar x id alumnos
+    AlumnoResponseDTO buscarAlumnoPorId(Integer id);
+
+
     //request alumno
     AlumnoResponseDTO registrar(AlumnoRequestDTO alumnoRequestDTO);
+
 
 
 }

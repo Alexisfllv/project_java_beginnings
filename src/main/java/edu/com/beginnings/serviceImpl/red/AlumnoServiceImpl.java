@@ -2,6 +2,7 @@ package edu.com.beginnings.serviceImpl.red;
 
 
 import edu.com.beginnings.dto.red.*;
+import edu.com.beginnings.excepcion.errores.RecursoNoEncontradoException;
 import edu.com.beginnings.map.red.AlumnoMapper;
 import edu.com.beginnings.model.red.Alumno;
 import edu.com.beginnings.model.red.AlumnoCurso;
@@ -14,7 +15,6 @@ import edu.com.beginnings.service.red.AlumnoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +37,13 @@ public class AlumnoServiceImpl implements AlumnoService {
         return alumnos.stream()
                 .map(alumno -> alumnoMapper.toAlumnoResponseDTO(alumno))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public AlumnoResponseDTO buscarAlumnoPorId(Integer id) {
+        Alumno alumno = alumnoRepo.findById(id)
+                .orElseThrow(() -> new RecursoNoEncontradoException("Alumno Response : " + id + " no encontrado"));
+        return alumnoMapper.toAlumnoResponseDTO(alumno);
     }
 
     @Override

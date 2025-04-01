@@ -35,8 +35,4 @@ public class Alumno {
     )
     private List<Taller> talleres = new ArrayList<>();
 
-
-
-
-
 }

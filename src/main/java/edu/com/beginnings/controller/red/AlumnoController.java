@@ -26,6 +26,13 @@ public class AlumnoController {
         return ResponseEntity.status(201).body(alumnoResponseDTO);
     }
 
+    //buscarId
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<AlumnoResponseDTO> buscar(@PathVariable Integer id) {
+        AlumnoResponseDTO alumnoResponseDTO = alumnoService.buscarAlumnoPorId(id);
+        return ResponseEntity.status(200).body(alumnoResponseDTO);
+    }
+
     //listar
     @GetMapping("/listar")
     public ResponseEntity<List<AlumnoResponseDTO>> listarAlumnos() {

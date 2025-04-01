@@ -30,5 +30,4 @@ public class AlumnoCurso {
     @Column(name = "estado")
     private String estado;
 
-
 }
