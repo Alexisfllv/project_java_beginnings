@@ -131,8 +131,20 @@ public class AccesoNoAutorizadoException extends RuntimeException {
     }
 }
 ```
-
-
+``` java
+public class DatabaseErrorException extends RuntimeException {
+    public DatabaseErrorException(String message) {
+        super(message);
+    }
+}
+```
+``` java
+public class IncorrectJsonException extends RuntimeException {
+    public IncorrectJsonException(String message) {
+        super(message);
+    }
+}
+```
 
 
 
