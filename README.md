@@ -308,9 +308,9 @@ src/main/java/com/corporation/proyect
 ```
 
 ``` java
-public interface ItemService {
+public interface IItemService {
 
-    // List all 
+    // List all
     List<ItemResponseDTO> getAllItems();
 
     // List all Pageable
@@ -319,7 +319,7 @@ public interface ItemService {
     // Get by ID
     ItemResponseDTO getItemById(Integer id);
 
-    // Create 
+    // Create
     ItemResponseDTO createItem(ItemRequestDTO itemRequestDTO);
 
     // Create Response
