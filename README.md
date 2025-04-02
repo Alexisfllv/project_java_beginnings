@@ -1,6 +1,7 @@
 
 ``` bash
 src/main/java/com/tuempresa/proyecto
+│── MainApplication.java  # Clase principal de Spring Boot
 │── config/           # Configuraciones (CORS, seguridad, etc.)
 │── controller/       # Controladores (APIs REST)
 │── dto/              # Clases DTO (Data Transfer Object)
@@ -13,7 +14,6 @@ src/main/java/com/tuempresa/proyecto
 │── security/         # Configuración de seguridad (JWT, autenticación)
 │── mapper/           # Mapstruct u otros mapeadores de DTOs
 │── enums/            # Enumeradores (si es necesario)
-│── MainApplication.java  # Clase principal de Spring Boot
 │── response/         # Clases para respuestas estándar
 │── pagination/       # Clases para manejar paginación
 ```
