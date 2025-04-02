@@ -145,8 +145,129 @@ public class IncorrectJsonException extends RuntimeException {
     }
 }
 ```
+``` java
+public class InvalidDataException extends RuntimeException {
+    //400 Bad Request
+    public InvalidDataException(String message) {
+        super(message);
+    }
+}
+```
+``` java
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+```
 
+``` java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
+    //JSON
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, Object>> handleMalformedJson(HttpMessageNotReadableException ex) {
+        Map<String, Object> response = Map.of(
+                "message", "JSON INVALID.",
+                "details", ex.getMostSpecificCause().getMessage(),
+                "code", HttpStatus.BAD_REQUEST.value()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // ERROR 404 - Recurso no encontrado
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String , Object>> handleNotFound(ResourceNotFoundException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("code", HttpStatus.NOT_FOUND.value());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    // ERROR 400 - Datos inválidos por regla de negocio
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<Map<String , Object>> handleInvalid(InvalidDataException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("code", HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // ERROR 400 - Validaciones con @Valid al DTO
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Lista de errores detallados con los campos y mensajes de error
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
+        );
+
+        response.put("message", "Error Valid.");
+        response.put("code", HttpStatus.BAD_REQUEST.value());
+        response.put("errors", errors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // ERROR 400 - Errores de base de datos
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDatabaseErrors(DataIntegrityViolationException ex) {
+        String mensajeError = "Database integrity error.";
+
+        if (ex.getMessage().contains("foreign key constraint fails")) {
+            mensajeError = "Cannot delete the record with related data.";
+        } else if (ex.getMessage().contains("Duplicate entry")) {
+            mensajeError = "The record already exists in the database.";
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", mensajeError);
+        response.put("code", HttpStatus.BAD_REQUEST.value());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    // ERROR 500 - Excepción general (debe ir al final)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Error Internal Server Error.");
+        response.put("details", ex.getMessage());
+        response.put("code", HttpStatus.INTERNAL_SERVER_ERROR.value());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+}
+```
+
+### RESPONSE
+``` bash
+src/main/java/com/corporation/proyect
+│── response/         # Clases para respuestas estándar
+```
+``` java
+public record ResponseDTO(
+        String mensaje,
+        Object data) {
+}
+```
+``` java
+@Getter
+public enum ResponseMessage {
+    SUCCESSFUL_ADDITION("Added successfully"),
+    SUCCESSFUL_MODIFICATION("Modification completed successfully"),
+    SUCCESSFUL_DELETION("Deletion completed successfully");
+    
+    private final String message;
+    // Private constructor
+    ResponseMessage(String message) {
+        this.message = message;
+    }
+}
+```
 
 
 ### SERVICE
