@@ -270,6 +270,37 @@ public enum ResponseMessage {
 ```
 
 
+
+### PAGINATION
+``` bash
+src/main/java/com/corporation/proyect
+│── pagination/       # Clases para manejar paginación
+```
+
+``` java
+public record PageResponseDTO<T>(
+        List<T> content,
+        int page,
+        int size,
+        long totalElements,
+        int totalPages,
+        boolean isLast,
+        boolean isFirst,
+        int numberOfElements
+) {
+    public PageResponseDTO(Page<T> page) {
+        this(page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast(),
+                page.isFirst(),
+                page.getNumberOfElements());
+    }
+}
+```
+
 ### SERVICE
 ``` bash
 src/main/java/com/corporation/proyect
@@ -282,17 +313,29 @@ public interface ItemService {
     // List all 
     List<ItemResponseDTO> getAllItems();
 
+    // List all Pageable
+    PageResponseDTO<ItemResponseDTO> getAllItemsPageable(Pageable pageable);
+
     // Get by ID
     ItemResponseDTO getItemById(Integer id);
 
     // Create 
-    ItemResponseDTO createItem(WorkshopRequestDTO ItemRequestDTO);
+    ItemResponseDTO createItem(ItemRequestDTO itemRequestDTO);
+
+    // Create Response
+    ResponseDTO createItemResponse(ItemRequestDTO itemRequestDTO);
 
     // Update
     ItemResponseDTO updateItem(ItemRequestDTO itemRequestDTO, Integer id);
 
+    // Update Response
+    ResponseDTO updateItemResponse(ItemRequestDTO itemRequestDTO, Integer id);
+
     // Delete
     void deleteItem(Integer id);
+
+    // Delete Response
+    ResponseDTO deleteItemResponse(Integer id);
 }
 ```
 ### SERVICE/IMPL
